@@ -39,6 +39,49 @@ export type ImportBody = Partial<S['ImportBody']>;
 export type HumanResolution = S['HumanResolution'];
 export type EvidenceMetadata = S['EvidenceMetadata'];
 export type SamplingProtocol = S['SamplingProtocol'];
+export type ResearchRequest = S['ResearchRequest'];
+export type TextAuditRequest = S['TextAuditRequest'];
+export type ResearchStatus = S['ResearchJob']['status'];
+export type ResearchCoverage = {
+  captured?: number;
+  complete?: boolean;
+  reached_end?: Record<string, boolean>;
+  requests?: number;
+  first_published_at?: string | null;
+  last_published_at?: string | null;
+  warnings?: string[];
+};
+export type ResearchDocument = {
+  id?: string;
+  source_id?: string;
+  kind?: string;
+  url: string;
+  title: string;
+  published_at?: string | null;
+  edited_at?: string | null;
+  capture_method?: string;
+  text_truncated?: boolean;
+};
+export type ResearchResult = {
+  model?: string;
+  model_provenance?: string;
+  facts: { total: number; supported: number; contradicted: number; partial: number; insufficient: number; unverifiable: number };
+  claim_ids: string[];
+  can_recommend_person: boolean;
+  summary: string;
+  analyst_summary?: string;
+  limitations: string[];
+  rejected_evidence?: { url: string; reason: string }[];
+  assessment_time?: string;
+};
+/** The backend types coverage/documents/result as free-form objects; these are the fields it actually writes. */
+export type ResearchJob = Omit<Known<S['ResearchJob']>, 'coverage' | 'documents' | 'result'> & {
+  coverage: ResearchCoverage;
+  documents: ResearchDocument[];
+  result: ResearchResult | null;
+  domain?: string;
+  access_code?: string;
+};
 export type Page<T> = { items: T[]; total: number; offset: number; limit: number };
 export type Health = { ok: boolean; ai: boolean; search: boolean; mode: string };
 export type Methodology = {
@@ -80,6 +123,7 @@ const STATUS_TEXT: Record<number, string> = {
   404: '找不到这条记录，可能链接有误或记录已不存在。',
   422: '提交的内容没有通过校验，请检查标注的字段。',
   502: '外部服务暂时不可用，本次没有产生新结论，可稍后重试。',
+  409: '这个任务当前的状态不允许这项操作，请刷新后查看最新状态。',
   503: '后端没有启用这项功能。',
 };
 
@@ -134,6 +178,12 @@ export const api = {
 
   verify: (id: string) => send<Job>('POST', `${V1}/claims/${enc(id)}/verification-jobs`),
   job: (id: string) => request<Job>(`${V1}/jobs/${enc(id)}`),
+
+  // Person-level research (Zhihu history collection + analyst verification).
+  research: (body: ResearchRequest) => send<ResearchJob>('POST', `${V1}/research-jobs`, body),
+  researchJob: (id: string) => request<ResearchJob>(`${V1}/research-jobs/${enc(id)}`),
+  retryResearch: (id: string) => send<ResearchJob>('POST', `${V1}/research-jobs/${enc(id)}/retry`),
+  textAudit: (body: TextAuditRequest) => send<ResearchJob>('POST', `${V1}/text-audits`, body),
 
   toggleFollow: (id: string) => send<{ followed: boolean }>('POST', `${V1}/authors/${enc(id)}/follow`),
 

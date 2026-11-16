@@ -63,7 +63,10 @@ export function Discover({ domain, q, followed, page }: { domain: string; q: str
             </h1>
             <p>从过去的判断与公开证据出发，找到值得持续关注的人。少看头衔与声量，多看有出处的历史记录。</p>
             <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
-              <Link className="btn primary" href="/import">
+              <Link className="btn primary" href="/research">
+                <Search size={16} aria-hidden /> 调查知乎答主
+              </Link>
+              <Link className="btn" href="/import">
                 <FilePlus2 size={16} aria-hidden /> 添加判断记录
               </Link>
               <Link className="btn" href="/methodology">

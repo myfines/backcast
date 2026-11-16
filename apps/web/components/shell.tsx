@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { BookOpenCheck, Bookmark, Compass, FilePlus2, Menu, Scale, ShieldCheck, X } from 'lucide-react';
+import { BookOpenCheck, Bookmark, Compass, FilePlus2, Menu, Scale, Search, ShieldCheck, X } from 'lucide-react';
 import { Suspense, useEffect, useState, type ReactNode } from 'react';
 import { allAuthors, api, type Health } from '@/lib/api';
 
@@ -44,6 +44,7 @@ function NavLinks({ data }: { data: ShellData }) {
     { href: '/', label: '发现预测者', icon: <Compass size={17} aria-hidden />, active: pathname === '/' && !followedView && !domain },
     { href: '/?followed=1', label: '我的关注', icon: <Bookmark size={17} aria-hidden />, active: followedView, count: data.followed },
     { href: '/compare', label: '对比判断记录', icon: <Scale size={17} aria-hidden />, active: pathname.startsWith('/compare') },
+    { href: '/research', label: '调查知乎答主', icon: <Search size={17} aria-hidden />, active: pathname.startsWith('/research') },
     { href: '/import', label: '添加判断记录', icon: <FilePlus2 size={17} aria-hidden />, active: pathname.startsWith('/import') },
     { href: '/methodology', label: '评价方法', icon: <BookOpenCheck size={17} aria-hidden />, active: pathname.startsWith('/methodology') },
     { href: '/review', label: '人工复核', icon: <ShieldCheck size={17} aria-hidden />, active: pathname.startsWith('/review') },

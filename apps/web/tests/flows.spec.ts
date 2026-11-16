@@ -2,6 +2,8 @@ import { test, expect, type Page } from '@playwright/test';
 
 // Disposable token for the throwaway E2E API (set in playwright.config.ts); not a real secret.
 const E2E_REVIEW_TOKEN = 'e2e-review-token';
+const E2E_WORKER_TOKEN = 'e2e-worker-token';
+const E2E_API = 'http://127.0.0.1:8001/api/v1';
 
 function trackErrors(page: Page) {
   const errors: string[] = [];
@@ -183,4 +185,50 @@ test('legacy share link redirects to the casebook', async ({ page }) => {
   await page.goto('/?expert=kuo');
   await expect(page).toHaveURL(/\/experts\/kuo$/);
   await expect(page.getByRole('heading', { level: 1, name: /郭明錤的合订本/ })).toBeVisible();
+});
+
+test('research: rejects non-profile targets and audits a public excerpt without inventing a verdict', async ({ page, request }) => {
+  const errors = trackErrors(page);
+  await page.goto('/research');
+  await expect(page.getByRole('heading', { level: 1, name: '调查知乎答主' })).toBeVisible();
+
+  // A question link is not a person: the backend refuses before any network access.
+  await page.getByRole('textbox', { name: '答主主页' }).fill('https://www.zhihu.com/question/123456');
+  await page.getByRole('textbox', { name: '想判断什么' }).fill('检查他的技术说法');
+  await page.getByRole('button', { name: '开始调查' }).click();
+  await expect(page.getByRole('form', { name: '调查表单' }).getByRole('alert')).toContainText('知乎个人主页');
+
+  await page.getByRole('tab', { name: '核查一段公开文字' }).click();
+  await page.getByRole('textbox', { name: '原文链接' }).fill('https://zhuanlan.zhihu.com/p/678912290');
+  await page.getByRole('textbox', { name: '标题' }).fill('端到端测试节选');
+  await page.getByRole('textbox', { name: '公开节选' }).fill('OpenAI通过训练一个1750亿参数的自回归语言模型，即GPT-3，随后继续迭代。');
+  await page.getByRole('textbox', { name: '想判断什么' }).fill('检查这条技术事实');
+  await page.getByRole('button', { name: '开始调查' }).click();
+
+  await expect(page).toHaveURL(/\/research\/[0-9a-f-]{36}$/);
+  const id = page.url().split('/').pop()!;
+  await expect(page.getByRole('status')).toContainText('等待分析');
+  await expect(page.getByText('输入节选不是按答主采集的历史列表')).toBeVisible();
+  await expect(page.getByRole('link', { name: /端到端测试节选/ })).toHaveAttribute('href', /zhihu\.com/);
+  // No analysis yet: no verdict counts and no recommendation wording.
+  await expect(page.getByRole('heading', { name: '核查结果' })).toHaveCount(0);
+
+  // The analyst returns a claim without evidence; the backend must keep it as "insufficient".
+  const submit = await request.post(`${E2E_API}/research-jobs/${id}/analysis`, {
+    headers: { 'X-Worker-Token': E2E_WORKER_TOKEN },
+    data: {
+      model: 'e2e-analyst',
+      claims: [{ quote: '1750亿参数的自回归语言模型', statement: 'GPT-3 是 1750 亿参数的自回归语言模型。', kind: 'fact', status: 'insufficient', reason: '测试中没有提供可下载的外部证据。', evidence: [] }],
+      summary: '端到端测试：没有证据。',
+      limitations: ['测试数据，不代表真实调查。'],
+    },
+  });
+  expect(submit.ok()).toBeTruthy();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: '核查结果' })).toBeVisible();
+  await expect(page.getByText('不据此推荐或否定这个人')).toBeVisible();
+  await expect(page.getByText('证据不足（条）')).toBeVisible();
+  await page.getByRole('link', { name: 'GPT-3 是 1750 亿参数的自回归语言模型。' }).click();
+  await expect(page).toHaveURL(/\/claims\//);
+  expect(errors).toEqual([]);
 });

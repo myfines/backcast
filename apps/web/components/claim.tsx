@@ -4,7 +4,7 @@ import { ExternalLink, FileSearch, Loader2, Search, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { api, ApiError, type Claim, type Evidence, type Job } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
-import { AUDIT_ACTION, JOB_STATUS, KIND, SOURCE_TYPE, VERDICT, dateTime, verdictView, day, pct } from '@/lib/format';
+import { AUDIT_ACTION, JOB_STATUS, KIND, CONDITION_STATE, LOGIC_STATUS, MODE_LABEL, OBSERVATION, SOURCE_TYPE, VERDICT, dateTime, verdictView, day, pct } from '@/lib/format';
 import { ErrorState, Notice, Skeleton } from './ui';
 
 export function VerdictMark({ status, kind }: { status: Claim['verdict']['status']; kind?: Claim['kind'] }) {
@@ -13,6 +13,48 @@ export function VerdictMark({ status, kind }: { status: Claim['verdict']['status
     <span className={`stamp ${v.tone}`} title={v.hint}>
       {v.label}
     </span>
+  );
+}
+
+/** How the analyst read the wording, kept apart from the verdict: reading, condition, logic. */
+function InterpretationPanel({ claim }: { claim: Claim }) {
+  const i = claim.interpretation!;
+  const obs = claim.judgment_review?.observation;
+  return (
+    <section className="card pad" style={{ margin: '16px 0' }} aria-labelledby="interp-h">
+      <div className="panel-title">
+        <h3 id="interp-h" style={{ fontSize: 15, fontWeight: 600 }}>原意解读</h3>
+        <span className="tag">{MODE_LABEL[i.mode] ?? i.mode}</span>
+      </div>
+      {i.reading && <p style={{ fontSize: 14 }}>{i.reading}</p>}
+      {i.condition_quotes.length > 0 && (
+        <div style={{ marginTop: 12 }}>
+          <div className="muted" style={{ fontSize: 13 }}>
+            作者设定的条件 · {CONDITION_STATE[i.condition_state] ?? i.condition_state}
+          </div>
+          <ul className="list-plain" style={{ marginTop: 6 }}>
+            {i.condition_quotes.map((q) => (
+              <li key={q}>“{q}”</li>
+            ))}
+          </ul>
+          {i.condition_state !== 'met' && <p className="muted" style={{ fontSize: 13, marginTop: 6 }}>条件没有确认发生，因此不按无条件预测判成败。</p>}
+        </div>
+      )}
+      {i.mode === 'scenario' && <p className="muted" style={{ fontSize: 13, marginTop: 12 }}>这是并列的可能情景，不是必然承诺，不判成败。</p>}
+      {obs && <p style={{ fontSize: 14, marginTop: 12 }}>{OBSERVATION[obs] ?? obs}。这是单独的观察，不计入正式预测成绩。</p>}
+      <div style={{ marginTop: 12 }}>
+        <span className="tag outline">{LOGIC_STATUS[i.logic.status] ?? i.logic.status}</span>
+        {i.logic.reason && <p style={{ fontSize: 13, marginTop: 8 }}>{i.logic.reason}</p>}
+        {i.logic.quotes.length > 0 && (
+          <ul className="list-plain" style={{ marginTop: 6 }}>
+            {i.logic.quotes.map((q) => (
+              <li key={q} className="muted">“{q}”</li>
+            ))}
+          </ul>
+        )}
+        <p className="muted" style={{ fontSize: 12, marginTop: 8 }}>逻辑评价由模型依据作者原文给出，单列显示，不抵消事实错误；直觉和未决判断不因缺少推导扣分。</p>
+      </div>
+    </section>
   );
 }
 
@@ -433,6 +475,8 @@ export function ClaimDetail({ claimId, initial, onChanged, asOf }: { claimId: st
           </div>
         )}
       </dl>
+
+      {c.interpretation && <InterpretationPanel claim={c} />}
 
       <section className="verdict-box" aria-labelledby="verdict-h">
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>

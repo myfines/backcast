@@ -133,3 +133,19 @@ export const PROVENANCE: Record<string, string> = {
   worker_declared: '由外部分析器自报，后端只校验了原文和引用',
   configured_api: '由后端配置的模型接口生成',
 };
+
+/** How the analyst read the author's wording. These describe the statement, not the person. */
+export const MODE_LABEL: Record<string, string> = {
+  assertion: '明确断言',
+  directional_view: '方向判断',
+  conditional: '条件判断',
+  scenario: '情景推演',
+  intuition: '直觉判断',
+};
+export const CONDITION_STATE: Record<string, string> = { met: '条件已发生', not_met: '条件未发生', unknown: '条件是否发生尚未确认' };
+export const LOGIC_STATUS: Record<string, string> = { coherent: '逻辑自洽', contradictory: '前后矛盾', not_assessed: '未评估逻辑' };
+export const OBSERVATION: Record<string, string> = {
+  supported_so_far: '截至核查时，方向得到证据支持',
+  contradicted_so_far: '截至核查时，方向与证据相反',
+  mixed_so_far: '截至核查时，证据有支持也有相反',
+};

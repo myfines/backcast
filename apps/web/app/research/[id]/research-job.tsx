@@ -4,7 +4,7 @@ import { ArrowRight, ExternalLink, Loader2, RotateCw } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { api, ApiError, type Claim, type ResearchJob } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
-import { CAPTURE_METHOD, PROVENANCE, RESEARCH_STATUS, dateTime, day } from '@/lib/format';
+import { CAPTURE_METHOD, MODE_LABEL as CLAIM_MODE, OBSERVATION, PROVENANCE, RESEARCH_STATUS, dateTime, day } from '@/lib/format';
 import { isApiNotFound, VerdictMark } from '@/components/claim';
 import { Empty, ErrorState, Notice, Skeleton } from '@/components/ui';
 
@@ -322,6 +322,7 @@ function Result({ job, result }: { job: ResearchJob; result: NonNullable<Researc
           </div>
         ))}
       </div>
+      {result.judgments && result.judgments.total > 0 && <Judgments result={result} />}
       {!result.can_recommend_person && (
         <Notice tone="neutral" title="不据此推荐或否定这个人">
           这是对已取得材料中 {f.total} 条事实的核查。样本范围有限，预测资格、版本存证与长期表现仍然分别评价。
@@ -368,6 +369,48 @@ function Result({ job, result }: { job: ResearchJob; result: NonNullable<Researc
   );
 }
 
+/** Judgements and reasoning are reported on their own lines, never merged into the fact counts or a score. */
+function Judgments({ result }: { result: NonNullable<ResearchJob['result']> }) {
+  const j = result.judgments!;
+  const r = result.reasoning;
+  const rows: [string, number][] = [
+    ['有证据支持', j.correct],
+    ['证据与之不符', j.wrong],
+    ['部分吻合', j.partial],
+    ['尚未到期', j.pending],
+    ['证据不足', j.insufficient],
+    ['不可验证（含情景、条件未发生）', j.unverifiable],
+  ];
+  return (
+    <div style={{ margin: '4px 0 16px' }}>
+      <h3 style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>另外分析的判断（{j.total} 条）</h3>
+      <p className="muted" style={{ fontSize: 13, marginBottom: 8 }}>预测、方向判断、条件判断、情景和直觉，与上面的事实核查分开统计。未决和不可验证的不算错误。</p>
+      <dl className="kv" style={{ marginTop: 0 }}>
+        {rows
+          .filter(([, n]) => n > 0)
+          .map(([label, n]) => (
+            <KvRow key={label} label={label} value={`${n} 条`} />
+          ))}
+      </dl>
+      {r && (
+        <p style={{ fontSize: 13, marginTop: 10 }}>
+          逻辑自洽 {r.coherent} 条 · 前后矛盾 {r.contradictory} 条 · 未评估 {r.not_assessed} 条
+          <span className="muted"> {r.note ?? '逻辑评价单列，不抵消事实错误。'}</span>
+        </p>
+      )}
+      {(result.observations?.length ?? 0) > 0 && (
+        <ul className="list-plain" style={{ marginTop: 10 }}>
+          {result.observations!.map((o) => (
+            <li key={o.claim_id} className="muted">
+              · {o.observation ? (OBSERVATION[o.observation] ?? o.observation) : ''}（单独观察，不计入预测成绩）
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function rejectReason(code: string) {
   return code === 'fetch_or_quote_validation_failed' ? '页面没有取回，或原文摘录没有在页面里找到' : code;
 }
@@ -381,9 +424,10 @@ function ClaimList({ ids }: { ids: string[] }) {
     <ul className="list-plain">
       {claims.data.map((c: Claim) => (
         <li key={c.id} style={{ justifyContent: 'space-between', borderTop: '1px solid var(--line)', paddingTop: 10 }}>
-          <Link href={`/claims/${encodeURIComponent(c.id)}`} style={{ minWidth: 0 }}>
-            {c.title}
-          </Link>
+          <span style={{ minWidth: 0 }}>
+            <Link href={`/claims/${encodeURIComponent(c.id)}`}>{c.title}</Link>
+            {c.interpretation && <small className="muted"> · {CLAIM_MODE[c.interpretation.mode] ?? c.interpretation.mode}</small>}
+          </span>
           <VerdictMark status={c.verdict.status} kind={c.kind} />
         </li>
       ))}

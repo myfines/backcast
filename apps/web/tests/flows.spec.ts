@@ -218,7 +218,8 @@ test('research: rejects non-profile targets and audits a public excerpt without 
     headers: { 'X-Worker-Token': E2E_WORKER_TOKEN },
     data: {
       model: 'e2e-analyst',
-      claims: [{ quote: '1750亿参数的自回归语言模型', statement: 'GPT-3 是 1750 亿参数的自回归语言模型。', kind: 'fact', status: 'insufficient', reason: '测试中没有提供可下载的外部证据。', evidence: [] }],
+      claims: [{ quote: '1750亿参数的自回归语言模型', statement: 'GPT-3 是 1750 亿参数的自回归语言模型。', kind: 'fact', status: 'insufficient', reason: '测试中没有提供可下载的外部证据。', evidence: [] },
+        { quote: '随后继续迭代', statement: '作者认为模型还会继续迭代。', kind: 'opinion', mode: 'intuition', reading: '作者凭直觉认为模型会继续更新。', reason: '直觉判断，没有推导，也没有外部证据。', evidence: [] }],
       summary: '端到端测试：没有证据。',
       limitations: ['测试数据，不代表真实调查。'],
     },
@@ -228,7 +229,11 @@ test('research: rejects non-profile targets and audits a public excerpt without 
   await expect(page.getByRole('heading', { name: '核查结果' })).toBeVisible();
   await expect(page.getByText('不据此推荐或否定这个人')).toBeVisible();
   await expect(page.getByText('证据不足（条）')).toBeVisible();
+  // Judgements are counted on their own line, not folded into the fact counts.
+  await expect(page.getByText('另外分析的判断（1 条）')).toBeVisible();
   await page.getByRole('link', { name: 'GPT-3 是 1750 亿参数的自回归语言模型。' }).click();
   await expect(page).toHaveURL(/\/claims\//);
+  await expect(page.getByRole('heading', { name: '原意解读' })).toBeVisible();
+  await expect(page.getByText('明确断言')).toBeVisible();
   expect(errors).toEqual([]);
 });

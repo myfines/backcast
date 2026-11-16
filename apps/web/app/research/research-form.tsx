@@ -29,6 +29,7 @@ export function ResearchForm() {
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [published, setPublished] = useState('');
+  const [edited, setEdited] = useState('');
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
@@ -52,7 +53,7 @@ export function ResearchForm() {
         // `domain` has a server-side default, so leave it out when blank instead of inventing one.
         job = await api.research({ target: target.trim(), goal: goal.trim(), ...(domain.trim() ? { domain: domain.trim() } : {}), max_items: maxItems, max_pages: maxPages, kinds, analyst } as ResearchRequest);
       } else {
-        job = await api.textAudit({ source_url: sourceUrl.trim(), title: title.trim(), text: text.trim(), goal: goal.trim(), ...(domain.trim() ? { domain: domain.trim() } : {}), published_at: published || null } as TextAuditRequest);
+        job = await api.textAudit({ source_url: sourceUrl.trim(), title: title.trim(), text: text.trim(), goal: goal.trim(), ...(domain.trim() ? { domain: domain.trim() } : {}), published_at: published || null, edited_at: edited || null } as TextAuditRequest);
       }
       rememberResearch({ id: job.id, target: job.target, at: job.created_at });
       router.push(`/research/${encodeURIComponent(job.id)}`);
@@ -108,6 +109,11 @@ export function ResearchForm() {
                   <span>发表日期</span>
                   <input className="input" type="date" max={today()} value={published} onChange={(e) => setPublished(e.target.value)} />
                   <small>不确定就留空，系统不会替你补日期。</small>
+                </label>
+                <label className="field">
+                  <span>最后编辑日期</span>
+                  <input className="input" type="date" max={today()} value={edited} onChange={(e) => setEdited(e.target.value)} />
+                  <small>页面只显示编辑时间时填这里，系统不会把它当作首次发表时间。</small>
                 </label>
                 <label className="field full">
                   <span>公开节选 *</span>

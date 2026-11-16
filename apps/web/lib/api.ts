@@ -11,7 +11,19 @@ type Known<T> = { [K in keyof T as string extends K ? never : number extends K ?
 export type Scorecard = S['Scorecard'];
 export type Evidence = Known<S['Evidence']> & { verification_method?: string; detected_date?: string | null };
 export type Verdict = Known<S['Verdict']> & { reviewed_by?: string; reviewed_at?: string };
+export type Interpretation = {
+  policy_version?: string;
+  mode: 'assertion' | 'directional_view' | 'conditional' | 'scenario' | 'intuition';
+  reading?: string;
+  condition_quotes: string[];
+  condition_state: 'met' | 'not_met' | 'unknown';
+  allow_outcome_verdict?: boolean;
+  logic: { status: 'coherent' | 'contradictory' | 'not_assessed'; reason?: string | null; quotes: string[]; bonus_points?: number };
+};
+export type JudgmentReview = { mode?: string; observation?: 'supported_so_far' | 'contradicted_so_far' | 'mixed_so_far' | null; reason?: string };
 export type Claim = Omit<Known<S['Claim']>, 'evidence' | 'verdict'> & {
+  interpretation?: Interpretation;
+  judgment_review?: JudgmentReview;
   evidence: Evidence[];
   verdict: Verdict;
   provenance?: string;
@@ -67,6 +79,10 @@ export type ResearchResult = {
   model_provenance?: string;
   facts: { total: number; supported: number; contradicted: number; partial: number; insufficient: number; unverifiable: number };
   claim_ids: string[];
+  policy_version?: string;
+  judgments?: { total: number; correct: number; wrong: number; partial: number; pending: number; insufficient: number; unverifiable: number };
+  reasoning?: { coherent: number; contradictory: number; not_assessed: number; bonus_points?: number; note?: string };
+  observations?: { claim_id: string; mode?: string; observation?: string | null; reason?: string }[];
   can_recommend_person: boolean;
   summary: string;
   analyst_summary?: string;

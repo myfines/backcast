@@ -2,6 +2,8 @@
 
 **想找有判断力的专业人士？先翻翻他的历史记录。**
 
+公开仓库：[myfines/backcast](https://github.com/myfines/backcast) · MIT License
+
 > 当前分工：后端主开发，前端交给队友 / Claude。现有 `apps/web` 只是可替换的演示原型。
 
 ## 队友先看这里

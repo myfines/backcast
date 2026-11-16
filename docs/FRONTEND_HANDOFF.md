@@ -8,7 +8,11 @@
 
 ## 五分钟对接
 
+公开库：https://github.com/myfines/backcast
+
 ```sh
+git clone https://github.com/myfines/backcast.git
+cd backcast
 python -m pip install -r requirements.txt
 python -m uvicorn services.api.main:app --reload --port 8000
 ```

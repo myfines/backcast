@@ -211,7 +211,7 @@ export function VerificationJobPanel({ claimId, onFinished }: { claimId: string;
         setJob(next);
         if (TERMINAL.has(next.status)) finished.current();
       } catch (e) {
-        if (live) setError(e instanceof Error ? e.message : '轮询失败');
+        if (live) setError(e instanceof Error ? e.message : '读取核验进度失败，请稍后刷新页面查看');
       }
     }, 1500);
     return () => {
@@ -227,7 +227,7 @@ export function VerificationJobPanel({ claimId, onFinished }: { claimId: string;
       setJob(j);
       if (TERMINAL.has(j.status)) finished.current();
     } catch (e) {
-      setError(e instanceof Error ? e.message : '无法启动核验');
+      setError(e instanceof Error ? e.message : '核验任务没有启动，请重试');
     }
   }
 
@@ -241,12 +241,12 @@ export function VerificationJobPanel({ claimId, onFinished }: { claimId: string;
       </button>
       {health.data && !ready && (
         <p className="muted" style={{ fontSize: 13, marginTop: 8 }}>
-          后端未配置模型{health.data.search ? '' : '与检索服务'}，无法自动核验；不会伪装成已完成 AI 核验。配置方法见 README。
+          后端还没有配置模型{health.data.search ? '' : '和检索服务'}，所以不能自动核验，也不会假装已经完成 AI 核验。配置方法见 README。
         </p>
       )}
       {health.data && ready && !health.data.search && (
         <p className="muted" style={{ fontSize: 13, marginTop: 8 }}>
-          外部检索未配置：任务可能因无法检索而失败，失败不会改变当前判定。
+          外部检索还没有配置，任务可能因为检索不到证据而失败；失败不会改变当前判定。
         </p>
       )}
       {job && (
@@ -260,8 +260,8 @@ export function VerificationJobPanel({ claimId, onFinished }: { claimId: string;
               </span>
             ))}
           </div>
-          {job.status === 'succeeded' && <p style={{ marginTop: 8 }}>流程结束不代表预测正确；请看下方更新后的判定与引用，结果可能仍是“证据不足”或“尚未到期”。</p>}
-          {job.status === 'failed' && <p style={{ marginTop: 8, color: 'var(--wrong)' }}>{job.error || '核验失败；未产生新结论，命题不会因此被判错。'}</p>}
+          {job.status === 'succeeded' && <p style={{ marginTop: 8 }}>任务结束不代表预测正确。请查看下方更新后的判定与引用，结果仍可能是“证据不足”或“尚未到期”。</p>}
+          {job.status === 'failed' && <p style={{ marginTop: 8, color: 'var(--wrong)' }}>{job.error || '核验没有完成，也没有产生新结论；这条判断不会因此被判错。'}</p>}
         </div>
       )}
       {error && (
@@ -290,7 +290,7 @@ function ReviewThread({ claimId, onSubmitted }: { claimId: string; onSubmitted: 
       reviews.reload();
       onSubmitted();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '提交失败');
+      setError(err instanceof Error ? err.message : '纠错没有提交成功，请重试');
     } finally {
       setBusy(false);
     }
@@ -308,7 +308,7 @@ function ReviewThread({ claimId, onSubmitted }: { claimId: string; onSubmitted: 
           onChange={(e) => setNote(e.target.value)}
         />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <small>提交后进入人工复核队列，存在待处理纠错时该档案暂停排名资格。</small>
+          <small>提交后进入人工复核队列。有待处理纠错时，这份档案会暂停排名资格。</small>
           <button className="btn" disabled={!valid || busy}>
             <Send size={14} aria-hidden /> 提交人工复核
           </button>
@@ -335,7 +335,7 @@ export function AuditList({ claimId, version }: { claimId: string; version: numb
   const audit = useApi(`audit:${claimId}:${version}`, () => api.audit(claimId, { limit: 50 }));
   if (audit.error) return <ErrorState error={audit.error} retry={audit.reload} />;
   if (!audit.data) return <Skeleton h={40} />;
-  if (!audit.data.items.length) return <p className="muted" style={{ fontSize: 13 }}>暂无变更记录。</p>;
+  if (!audit.data.items.length) return <p className="muted" style={{ fontSize: 13 }}>还没有变更记录。</p>;
   return (
     <ul className="audit-list">
       {audit.data.items.map((row) => (
@@ -380,7 +380,7 @@ export function ClaimDetail({ claimId, initial, onChanged, asOf }: { claimId: st
       {frozen && (
         <div style={{ marginBottom: 14 }}>
           <Notice tone="info" title={`截止 ${day(asOf)} 的视图`}>
-            仅显示当时已发表的证据与据此得出的判定；纠错与核验作用于当前记录。
+            只显示当时已发表的证据，以及据此得出的判定。纠错和核验针对的是当前记录。
           </Notice>
         </div>
       )}
@@ -473,7 +473,7 @@ export function ClaimDetail({ claimId, initial, onChanged, asOf }: { claimId: st
           </ul>
         ) : (
           <p className="muted" style={{ fontSize: 14, marginTop: 8 }}>
-            还没有外部证据。没有证据时保持“证据不足”，不会自动给出结论。
+            还没有外部证据。没有证据时会一直显示“证据不足”，不会自动给出结论。
           </p>
         )}
         <div style={{ marginTop: 14 }}>
@@ -486,7 +486,7 @@ export function ClaimDetail({ claimId, initial, onChanged, asOf }: { claimId: st
           纠错
         </h3>
         <p className="muted" style={{ fontSize: 13 }}>
-          发现原文、日期、出处或判定口径有问题？留下说明，由人工复核处理并留痕。
+          发现原文、日期、出处或判定口径有问题？写下说明，人工复核后会处理并留下记录。
         </p>
         <ReviewThread claimId={c.id} onSubmitted={refresh} />
       </section>

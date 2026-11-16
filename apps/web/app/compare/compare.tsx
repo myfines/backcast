@@ -42,7 +42,7 @@ export function Compare({ ids, domain }: { ids: string[]; domain: string }) {
         <div>
           <div className="eyebrow">Compare on the same questions</div>
           <h1 className="page-title">对比判断记录</h1>
-          <p className="lede">并排查看两到三位预测者的记录。只有同一领域、足够多的共同事件且各自样本达标时，才允许比较高低；否则只并排展示，不宣布胜者。</p>
+          <p className="lede">并排查看两到三位预测者的记录。只有同一领域、共同事件足够多、各自样本也达标时，才比较高低；其余情况只并排展示，不宣布胜者。</p>
         </div>
       </header>
 
@@ -99,7 +99,7 @@ export function Compare({ ids, domain }: { ids: string[]; domain: string }) {
       {!ready ? (
         <div className="section">
           <Empty title="至少选择两位预测者">
-            <p>建议先选同一领域的人，例如消费科技里的郭明錤与 Mark Gurman。</p>
+            <p>先选同一领域的人更容易比较，例如消费科技领域的郭明錤和 Mark Gurman。</p>
           </Empty>
         </div>
       ) : result.error ? (
@@ -126,7 +126,7 @@ function ComparisonView({ data, byId, crossDomain, domains }: { data: Comparison
       <div className="comparison-notice" style={{ display: 'grid', gap: 10 }}>
         {crossDomain && (
           <Notice tone="warn" title="跨领域并排">
-            所选预测者分属 {domains.join('、')}。不同领域的题目难度与集合不同，不能直接比较高低。
+            所选预测者分属 {domains.join('、')}。不同领域的题目和难度不同，不能直接比较高低。
           </Notice>
         )}
         <Notice tone={data.comparable ? 'ok' : 'neutral'} title={data.comparable ? '满足比较政策' : '仅并排展示，不宣布胜者'}>
@@ -200,7 +200,7 @@ function ComparisonView({ data, byId, crossDomain, domains }: { data: Comparison
       <div className="card pad" style={{ marginTop: 16 }}>
         <div className="panel-title">
           <h3>共同事件</h3>
-          <small>双方都给出显式概率、且结果一致的事件</small>
+          <small>各方都给出了显式概率、且结果记录一致的事件</small>
         </div>
         {data.event_keys.length ? (
           <div className="tags">
@@ -212,12 +212,12 @@ function ComparisonView({ data, byId, crossDomain, domains }: { data: Comparison
           </div>
         ) : (
           <p className="muted" style={{ fontSize: 14 }}>
-            暂无共同事件。需要至少 10 个同口径共同概率事件，才计算并比较配对 Brier。
+            没有共同事件。同一口径下至少有 10 个共同的概率事件，才会计算并比较配对 Brier。
           </p>
         )}
         {data.conflicting_events.length > 0 && (
           <p style={{ marginTop: 10, fontSize: 13 }}>
-            结果或截止日记录不一致、已排除：
+            已排除结果或截止日记录不一致的事件：
             {data.conflicting_events.map((k) => (
               <span key={k} className="tag mono" style={{ marginLeft: 6 }}>
                 {k}

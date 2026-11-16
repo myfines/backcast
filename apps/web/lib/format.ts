@@ -47,7 +47,7 @@ export const AUTHOR_TYPE: Record<string, string> = { 个人: '个人档案', 机
 
 export const AUDIT_ACTION: Record<string, string> = {
   author_created: '建立档案',
-  claim_created: '收录命题',
+  claim_created: '收录判断',
   source_imported: '导入原始材料',
   review_requested: '提交纠错',
   follow_changed: '关注状态变化',
@@ -69,7 +69,7 @@ export const POLICY_LABEL: Record<string, string> = {
 };
 
 export const EXCLUSION_LABEL: Record<string, string> = {
-  not_prediction: '不是预测命题',
+  not_prediction: '不是预测',
   unidentified_event: '未标注独立事件',
   unverified_original: '原始版本未存证',
   missing_time: '缺少发表或截止时间',

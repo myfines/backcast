@@ -76,7 +76,7 @@ test('import creates persistent conservative report and follow persists', async 
   await expect(page.getByRole('heading', { level: 1, name: /测试预测者的合订本/ })).toBeVisible();
   await expect(page.locator('.profile-timeline')).toContainText('尚未到期');
   await expect(page.getByText('作者身份与日期未经核实')).toBeVisible();
-  await page.getByRole('button', { name: '关注记录', exact: true }).click();
+  await page.getByRole('button', { name: '关注', exact: true }).click();
   await expect(page.getByRole('button', { name: '已关注', exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByRole('button', { name: '已关注', exact: true })).toBeVisible();

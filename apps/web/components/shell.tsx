@@ -108,10 +108,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Suspense>
         <div className="side-foot">
           <strong>只看记录，不看声量</strong>
-          不以粉丝数、语气或一次命中推断专业能力；样本不足时如实显示。
+          不用粉丝数、语气或一次命中来推断专业能力；样本不足时，如实显示“样本不足”。
           <div className="service-line" title="来自 /api/health">
             <span className={'service-dot' + (h?.ai ? ' on' : '')} aria-hidden />
-            {h ? (h.ai ? 'AI 抽取已启用' : 'AI 未配置 · 使用规则抽取') : '后端状态未知'}
+            {h ? (h.ai ? 'AI 抽取已启用' : 'AI 未配置，使用规则抽取') : '后端状态未知'}
           </div>
           <div className="service-line">
             <span className={'service-dot' + (h?.search ? ' on' : '')} aria-hidden />

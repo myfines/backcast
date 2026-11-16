@@ -31,11 +31,11 @@ type Tab = 'queue' | 'resolve' | 'evidence' | 'sampling';
 
 function explain(e: unknown) {
   if (e instanceof ApiError) {
-    if (e.status === 503) return `${e.message}（后端 .env 未设置 REVIEW_API_TOKEN）`;
-    if (e.status === 403) return `${e.message} 请检查令牌。`;
+    if (e.status === 503) return `${e.message}（后端 .env 里没有设置 REVIEW_API_TOKEN）`;
+    if (e.status === 403) return `${e.message}请检查令牌是否输入完整。`;
     return e.message;
   }
-  return e instanceof Error ? e.message : '提交失败';
+  return e instanceof Error ? e.message : '提交没有成功，请重试';
 }
 
 export function ReviewConsole() {
@@ -60,7 +60,7 @@ export function ReviewConsole() {
         <div>
           <div className="eyebrow">Reviewer console</div>
           <h1 className="page-title">人工复核</h1>
-          <p className="lede">处理纠错、裁定命题、标注证据出处、声明采样覆盖。每次提交都会写入审计记录，保留修改前后的内容。</p>
+          <p className="lede">在这里处理纠错、裁定命题、标注证据出处、声明采样覆盖。每次提交都会写入审计记录，并保留修改前后的内容。</p>
         </div>
       </header>
 
@@ -74,7 +74,7 @@ export function ReviewConsole() {
         {token ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <span className="tag">
-              <KeyRound size={13} aria-hidden /> 已在本标签页会话中保存令牌
+              <KeyRound size={13} aria-hidden /> 令牌已保存在当前标签页
             </span>
             <button
               className="btn small"
@@ -103,7 +103,7 @@ export function ReviewConsole() {
           </form>
         )}
         <p className="muted" style={{ fontSize: 13, marginTop: 10 }}>
-          令牌只保存在当前浏览器标签页，关闭即失效；令牌是否有效由后端在提交时校验（无效返回 403，未配置返回 503）。
+          令牌只保存在当前浏览器标签页，关闭标签页即失效。令牌是否有效，由后端在你提交时校验：无效返回 403，后端未配置返回 503。
         </p>
       </section>
 
@@ -147,7 +147,7 @@ export function ReviewConsole() {
           {claim && (
             <section className="card pad" aria-labelledby="audit-h">
               <h3 id="audit-h" style={{ fontSize: 15, fontWeight: 600 }}>
-                该命题的审计历史
+                这条命题的审计历史
               </h3>
               <AuditList claimId={claim.id} version={version} />
             </section>
@@ -170,7 +170,7 @@ function Queue({ claims, authorName, version, onPick }: { claims: Claim[]; autho
     return (
       <div className="empty">
         <h3>没有待处理的纠错</h3>
-        <p>用户在“证据与判定”中提交的纠错会出现在这里。</p>
+        <p>用户在“证据与判定”里提交的纠错，会出现在这里。</p>
       </div>
     );
   return (
@@ -289,7 +289,7 @@ function useSubmit(onDone: () => void) {
 }
 
 function NeedToken({ token }: { token: string }) {
-  return token ? null : <Notice tone="warn">请先在上方输入复核令牌。</Notice>;
+  return token ? null : <Notice tone="warn">请先在上方输入复核令牌，再提交。</Notice>;
 }
 
 function ResolutionForm({ token, claim, onDone }: { token: string; claim: Claim; onDone: () => void }) {
@@ -365,7 +365,7 @@ function ResolutionForm({ token, claim, onDone }: { token: string; claim: Claim;
               </label>
             ))
           ) : (
-            <Notice tone="warn">该命题没有已核对的证据，无法裁定。请先检索证据或补充证据。</Notice>
+            <Notice tone="warn">这条命题还没有已核对的证据，暂时无法裁定。请先检索或补充证据。</Notice>
           )}
         </fieldset>
         <div className="form-grid">
@@ -413,7 +413,7 @@ function ResolutionForm({ token, claim, onDone }: { token: string; claim: Claim;
           <label className="field">
             <span>独立事件标识 *</span>
             <input className="input mono" value={eventKey} onChange={(e) => setEventKey(e.target.value)} placeholder="如 vision-pro-us-launch-2024" />
-            <small>同一事件的多条记录用相同标识去重；对比时据此找共同事件</small>
+            <small>同一事件的多条记录用相同标识去重；对比时也靠它找出共同事件</small>
           </label>
           <label className="field">
             <span>结果发生时间 *</span>
@@ -473,7 +473,7 @@ function EvidenceForm({ token, claim, onDone }: { token: string; claim: Claim; o
     setSourceType(ev?.source_type ?? 'unknown');
   }, [ev]);
 
-  if (!claim.evidence.length) return <Notice tone="neutral">该命题还没有证据。</Notice>;
+  if (!claim.evidence.length) return <Notice tone="neutral">这条命题还没有证据。</Notice>;
   const valid = token && ev && reviewer.trim() && reason.trim().length >= 10 && (!confirmed || originUrl.trim());
   return (
     <form
@@ -491,7 +491,7 @@ function EvidenceForm({ token, claim, onDone }: { token: string; claim: Claim; o
             reviewer: reviewer.trim(),
             reason: reason.trim(),
           });
-          return '证据元数据已更新，审计记录保留修改前内容。';
+          return '证据元数据已更新，审计记录里保留了修改前的内容。';
         });
       }}
     >
@@ -585,7 +585,7 @@ function SamplingForm({ token, authors, onDone }: { token: string; authors: Auth
       <div style={{ display: 'grid', gap: 16 }}>
         <NeedToken token={token} />
         <p className="muted" style={{ fontSize: 14 }}>
-          声明已完整收录某段时间窗口内该作者在主领域的全部公开判断，用于排除“只挑成功案例”。
+          声明已完整收录该作者在某个时间窗口内、主领域的全部公开判断，以排除“只挑成功案例”的可能。
         </p>
         <div className="form-grid">
           <label className="field">

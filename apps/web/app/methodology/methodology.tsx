@@ -7,11 +7,11 @@ import { ErrorState, Notice, Skeleton } from '@/components/ui';
 
 const METRIC: Record<string, [string, string]> = {
   exact_accuracy: ['严格命中率', '只统计有明确截止日、原始版本已存证、证据有日期且被引用的独立事件。'],
-  wilson_95: ['Wilson 95% 区间', '小样本时命中率波动很大；区间越宽，说明越不能下结论。'],
-  brier: ['Brier 分数', '只用于原文写明百分比的预测：(概率 − 结果)² 的平均，越低越好；50% 基线为 0.25。'],
+  wilson_95: ['Wilson 95% 区间', '样本少时，命中率会大幅波动；区间越宽，越不能下结论。'],
+  brier: ['Brier 分数', '只用于原文写明百分比的预测：取“(概率 − 结果)²”的平均值，越低越好，50% 基线为 0.25。'],
   calibration: ['校准', '把预测按概率分箱，看“说七成的事”是否约七成发生。'],
-  traceability: ['可追溯性', '证据是否有日期、是否确认原始出处与一手来源——描述材料质量，不评价人。'],
-  sampling_coverage: ['采样覆盖', '是否完整收录某段时间内的全部判断，避免只挑成功案例。'],
+  traceability: ['可追溯性', '证据有没有日期，原始出处和一手来源是否已确认。它描述的是材料质量，不评价人。'],
+  sampling_coverage: ['采样覆盖', '是否完整收录某一时间段内的全部判断，避免只挑成功案例。'],
 };
 
 export function Methodology() {
@@ -22,7 +22,7 @@ export function Methodology() {
         <div>
           <div className="eyebrow">How we evaluate</div>
           <h1 className="page-title">评价方法</h1>
-          <p className="lede">Backcast 评价的是“某个领域里，过去的判断后来怎么样了”。它不是资质认证，也不是人品评分。</p>
+          <p className="lede">Backcast 看的是：某个领域里，过去的判断后来怎么样了。它不是资质认证，也不是人品评分。</p>
         </div>
       </header>
 
@@ -64,7 +64,7 @@ export function Methodology() {
                   ))}
                 </dl>
                 <p className="muted" style={{ fontSize: 13, marginTop: 12 }}>
-                  未达门槛时只展示记录与样本量，不显示名次或“推荐专家”。存在待处理纠错时，排名资格暂停。
+                  没达到门槛时，只显示记录和样本量，不显示名次，也不推荐“专家”。有待处理的纠错时，排名资格会暂停。
                 </p>
               </section>
 
@@ -74,7 +74,7 @@ export function Methodology() {
                 </h2>
                 <ul className="list-plain">
                   {m.data.excluded.map((x) => (
-                    <li key={x}>— {x}</li>
+                    <li key={x}>· {x}</li>
                   ))}
                 </ul>
               </section>
@@ -82,7 +82,7 @@ export function Methodology() {
           </div>
 
           <Notice tone="info" title="为什么现在的严格成绩都是“样本不足”？">
-            内置案例是注明来源的人工转述，每位预测者只有少量记录，且原始历史版本尚未独立存证。它们可以用来复盘，但不计入严格预测成绩——这是方法要求，不是数据缺失。
+            内置案例是注明来源的人工转述，每位预测者只有少量记录，原始历史版本也还没有独立存证。这些案例可以用来复盘，但不计入严格预测成绩——这是方法的要求，不是数据缺失。
           </Notice>
 
           <section className="card pad" aria-labelledby="m-ref">
@@ -99,7 +99,7 @@ export function Methodology() {
               ))}
             </ul>
             <p className="muted" style={{ fontSize: 13, marginTop: 12 }}>
-              标准概率统计公式由本项目独立实现。详细说明见仓库 <span className="mono">{m.data.details}</span>。
+              标准的概率统计公式由本项目独立实现。详细说明见仓库中的 <span className="mono">{m.data.details}</span>。
             </p>
           </section>
         </div>

@@ -14,7 +14,7 @@ export function ClaimPage({ id }: { id: string }) {
   if (data.error) {
     if (isApiNotFound(data.error))
       return (
-        <Empty title="命题不存在">
+        <Empty title="找不到这条判断">
           <p>
             <Link href="/" style={{ color: 'var(--accent)' }}>返回发现页</Link>
           </p>

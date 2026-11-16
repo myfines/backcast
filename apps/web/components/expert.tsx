@@ -33,13 +33,13 @@ export function FollowButton({ author, onChange, compact = false }: { author: Pi
       window.dispatchEvent(new Event('backcast:follow'));
     } catch (e) {
       setFollowed(!desired);
-      setError(e instanceof Error ? e.message : '关注失败');
+      setError(e instanceof Error ? e.message : '关注状态没有更新，请重试');
     } finally {
       setBusy(false);
     }
   }
 
-  const label = followed ? '已关注' : '关注记录';
+  const label = followed ? '已关注' : '关注';
   return (
     <>
       <button
@@ -48,7 +48,7 @@ export function FollowButton({ author, onChange, compact = false }: { author: Pi
         disabled={busy}
         aria-pressed={followed}
         aria-label={compact ? `${label}：${author.name}` : undefined}
-        title={followed ? '取消关注' : '关注后可在“我的关注”中找到'}
+        title={followed ? '点击取消关注' : '关注后可在“我的关注”里找到'}
       >
         {followed ? <BookmarkCheck size={15} aria-hidden /> : <Bookmark size={15} aria-hidden />}
         {!compact && label}
@@ -100,7 +100,7 @@ export function ExpertCard({ author, onFollowChange }: { author: Author; onFollo
         </div>
       </dl>
       <div className="readiness-line">
-        {card.readiness.eligible_for_ranking ? '样本达到比较门槛' : `样本不足，不排名 · 门槛 ${card.readiness.policy.minimum_events ?? 20} 个独立事件`}
+        {card.readiness.eligible_for_ranking ? '样本达到比较门槛' : `样本不足，暂不排名 · 需 ${card.readiness.policy.minimum_events ?? 20} 个独立事件`}
       </div>
 
       <div className="card-foot">
@@ -108,7 +108,7 @@ export function ExpertCard({ author, onFollowChange }: { author: Author; onFollo
           翻开合订本 <ArrowRight size={15} aria-hidden />
         </Link>
         <Link className="btn small quiet" href={`/compare?ids=${encodeURIComponent(author.id)}`}>
-          <Scale size={14} aria-hidden /> 对比
+          <Scale size={14} aria-hidden /> 加入对比
         </Link>
       </div>
     </article>

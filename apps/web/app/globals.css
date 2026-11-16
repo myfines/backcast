@@ -40,7 +40,9 @@ body {
   font: 15px/1.7 var(--sans);
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "tnum" 0;
+  line-break: strict; /* 避免标点出现在行首 */
 }
+p, li, dd, .notice { text-wrap: pretty; }
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }

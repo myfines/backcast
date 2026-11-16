@@ -88,7 +88,7 @@ export function CalibrationChart({ bins }: { bins: Scorecard['probabilistic']['c
         <div>
           暂无显式概率预测样本
           <br />
-          <small>只有原文写明百分比的预测才进入校准图；不会从语气推测概率。</small>
+          <small>只有原文写明百分比的预测才会进入校准图，系统不会从语气推测概率。</small>
         </div>
       </div>
     );
@@ -129,7 +129,7 @@ export function ReadinessNotice({ card }: { card: Scorecard }) {
   if (r.eligible_for_ranking)
     return (
       <Notice tone="ok" title="样本达到比较门槛">
-        仍仅代表该领域历史判断记录，不是资质认证。{r.pending_reviews ? `待处理纠错 ${r.pending_reviews} 条。` : ''}
+        结果只代表这个领域的历史判断记录，不是资质认证。{r.pending_reviews ? `待处理纠错 ${r.pending_reviews} 条。` : ''}
       </Notice>
     );
   return (
@@ -182,7 +182,7 @@ export function ScorecardPanel({ card }: { card: Scorecard }) {
       <section className="card pad span-4" aria-labelledby="sc-ev">
         <div className="panel-title">
           <h3 id="sc-ev">证据可追溯性</h3>
-          <small>描述材料，不评价人</small>
+          <small>评价材料，不评价人</small>
         </div>
         <dl className="kv" style={{ marginTop: 0 }}>
           <dt>证据条数</dt>
@@ -201,7 +201,7 @@ export function ScorecardPanel({ card }: { card: Scorecard }) {
       <section className="card pad span-6" aria-labelledby="sc-cov">
         <div className="panel-title">
           <h3 id="sc-cov">样本覆盖与比较门槛</h3>
-          <small>{card.coverage.sampling_confirmed ? '采样覆盖已确认' : '采样覆盖未确认'}</small>
+          <small>{card.coverage.sampling_confirmed ? '已确认采样覆盖' : '尚未确认采样覆盖'}</small>
         </div>
         <CoverageMeters card={card} />
         <dl className="kv">
@@ -223,7 +223,7 @@ export function ScorecardPanel({ card }: { card: Scorecard }) {
       <section className="card pad span-6" aria-labelledby="sc-cal">
         <div className="panel-title">
           <h3 id="sc-cal">校准曲线</h3>
-          <small>说 70% 的事，是否约七成发生</small>
+          <small>说“有 70% 把握”的事，是否约七成发生</small>
         </div>
         <CalibrationChart bins={prob.calibration} />
       </section>

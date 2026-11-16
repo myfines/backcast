@@ -18,7 +18,7 @@ export function Notice({ tone = 'neutral', title, children, icon = true }: { ton
 
 export function ErrorState({ error, retry }: { error: ApiError | Error; retry?: () => void }) {
   return (
-    <Notice tone="error" title="加载失败">
+    <Notice tone="error" title="内容没有加载出来">
       <span>{error.message}</span>
       {retry && (
         <button className="btn small" style={{ marginLeft: 12 }} onClick={retry}>
@@ -44,7 +44,7 @@ export function Skeleton({ h = 18, w = '100%', style }: { h?: number; w?: number
 
 export function CardSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div className="grid-cards" aria-busy="true" aria-label="加载中">
+    <div className="grid-cards" aria-busy="true" aria-label="正在读取">
       {Array.from({ length: count }, (_, i) => (
         <div key={i} className="card pad" style={{ display: 'grid', gap: 12 }}>
           <div style={{ display: 'flex', gap: 12 }}>

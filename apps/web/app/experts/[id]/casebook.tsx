@@ -51,9 +51,9 @@ export function Casebook({ id, asOf, domain, claim }: { id: string; asOf: string
   if (report.error && !r) {
     if (isApiNotFound(report.error))
       return (
-        <Empty title="档案不存在">
+        <Empty title="找不到这份档案">
           <p>
-            链接可能来自另一台机器的本地数据库。<Link href="/" style={{ color: 'var(--accent)' }}>返回发现页</Link>
+            链接可能来自另一台机器上的本地数据库。<Link href="/" style={{ color: 'var(--accent)' }}>返回发现页</Link>
           </p>
         </Empty>
       );
@@ -75,7 +75,7 @@ export function Casebook({ id, asOf, domain, claim }: { id: string; asOf: string
     const url = `${location.origin}/experts/${encodeURIComponent(id)}${asOf ? `?as_of=${asOf}` : ''}`;
     try {
       await navigator.clipboard.writeText(url);
-      showToast('已复制分享链接；对方需要访问同一服务与数据库');
+      showToast('已复制链接。对方需要能访问同一个服务与数据库才能打开。');
     } catch {
       showToast(url);
     }
@@ -128,7 +128,7 @@ export function Casebook({ id, asOf, domain, claim }: { id: string; asOf: string
             <Scale size={14} aria-hidden /> 加入对比
           </Link>
           <button className="btn small" onClick={share}>
-            <Link2 size={14} aria-hidden /> 分享
+            <Link2 size={14} aria-hidden /> 复制链接
           </button>
         </div>
       </header>
@@ -136,7 +136,7 @@ export function Casebook({ id, asOf, domain, claim }: { id: string; asOf: string
       {(unverifiedIdentity || a.takeaway) && (
         <div style={{ marginTop: 14 }}>
           <Notice tone={unverifiedIdentity ? 'warn' : 'neutral'} title={unverifiedIdentity ? '作者身份与日期未经核实' : undefined}>
-            {unverifiedIdentity ? '用户导入的档案仅供整理与复盘，不能直接用于公开排名。' : a.takeaway}
+            {unverifiedIdentity ? '用户导入的档案只用于整理和复盘，不能直接用于公开排名。' : a.takeaway}
           </Notice>
         </div>
       )}
@@ -170,11 +170,11 @@ export function Casebook({ id, asOf, domain, claim }: { id: string; asOf: string
           </label>
           {(asOf || domain) && (
             <button type="button" className="btn small quiet" onClick={() => router.replace(href({ asOf: '', domain: '', claim: '' }), { scroll: false })}>
-              <X size={14} aria-hidden /> 清除
+              <X size={14} aria-hidden /> 清除筛选
             </button>
           )}
         </form>
-        {asOf ? <span className="asof-flag">截止 {day(asOf)} 的视图 · 不展示之后的结果与证据</span> : <span className="muted" style={{ fontSize: 13 }}>当前视图：截至今天</span>}
+        {asOf ? <span className="asof-flag">截止 {day(asOf)} 的视图 · 不显示之后的结果与证据</span> : <span className="muted" style={{ fontSize: 13 }}>当前视图：截至今天</span>}
       </div>
 
       <section className="section" aria-labelledby="panel-h">
@@ -223,16 +223,16 @@ export function Casebook({ id, asOf, domain, claim }: { id: string; asOf: string
             ))}
           </div>
         ) : (
-          <Empty title={asOf ? '该截止日前没有已发表的判断' : '这里还没有判断'}>
+          <Empty title={asOf ? '这个截止日之前没有已发表的判断' : '还没有收录判断'}>
             <p>
               <Link href={`/import?author=${encodeURIComponent(a.id)}`} style={{ color: 'var(--accent)' }}>
-                为 {a.name} 追加一篇公开文章
+                给 {a.name} 追加一篇公开文章
               </Link>
             </p>
           </Empty>
         )}
         <p className="muted" style={{ fontSize: 13, marginTop: 14 }}>
-          判定标签：{Object.values(VERDICT).map((v) => v.label).join(' · ')}。“结果吻合”只说明这一条记录，不等于严格预测成绩。
+          判定标签：{Object.values(VERDICT).map((v) => v.label).join('、')}。“结果吻合”只说明这一条记录，不等于严格预测成绩。
           <Link href={`/import?author=${encodeURIComponent(a.id)}`} style={{ color: 'var(--accent)', marginLeft: 6 }}>
             追加文章 →
           </Link>
@@ -246,7 +246,7 @@ export function Casebook({ id, asOf, domain, claim }: { id: string; asOf: string
         <ul className="list-plain" style={{ marginTop: 10 }}>
           {r.scorecard.limitations.map((l) => (
             <li key={l} className="muted">
-              — {l}
+              · {l}
             </li>
           ))}
         </ul>

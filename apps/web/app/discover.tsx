@@ -67,7 +67,7 @@ export function Discover({ domain, q, followed, page }: { domain: string; q: str
                 <FilePlus2 size={16} aria-hidden /> 添加判断记录
               </Link>
               <Link className="btn" href="/methodology">
-                我们如何评价 <ArrowRight size={15} aria-hidden />
+                了解评价方法 <ArrowRight size={15} aria-hidden />
               </Link>
             </div>
           </div>
@@ -121,8 +121,8 @@ export function Discover({ domain, q, followed, page }: { domain: string; q: str
         </div>
 
         <p className="muted" style={{ fontSize: 13, marginBottom: 14 }} aria-live="polite">
-          {list.data ? `找到 ${list.data.total} 位预测者` : '正在加载…'}
-          {followed && ' · 关注仅保存在本机服务的数据库中'}
+          {list.data ? `找到 ${list.data.total} 位预测者` : '正在读取预测者……'}
+          {followed && ' · 关注列表只保存在本机服务的数据库里'}
         </p>
 
         {list.error ? (
@@ -132,11 +132,11 @@ export function Discover({ domain, q, followed, page }: { domain: string; q: str
         ) : list.data.items.length === 0 ? (
           followed ? (
             <Empty title="还没有关注任何人">
-              <p>在合订本页面点“关注记录”，之后可在这里找到。</p>
+              <p>在预测者卡片或合订本页点“关注”，就能在这里集中查看。</p>
             </Empty>
           ) : (
             <Empty title="没有匹配的预测者">
-              <p>换个关键词，或者<Link href="/import" style={{ color: 'var(--accent)' }}> 从一条公开判断建立档案</Link>。</p>
+              <p>换个关键词或领域试试，也可以<Link href="/import" style={{ color: 'var(--accent)' }}>用一条公开判断建立档案</Link>。</p>
             </Empty>
           )
         ) : (
@@ -165,7 +165,7 @@ export function Discover({ domain, q, followed, page }: { domain: string; q: str
       {!followed && (
         <div className="section">
           <Notice tone="neutral" title="样本小，结论也小">
-            当前收录的是注明来源的人工转述案例，每位预测者仅少量记录，原始历史版本尚未独立存证，因此严格计分样本为 0——这是如实记录，不是系统故障。
+            目前收录的是注明来源的人工转述案例。每位预测者只有少量记录，原始历史版本也还没有独立存证，所以严格计分样本为 0——这是如实记录，不是系统故障。
           </Notice>
         </div>
       )}

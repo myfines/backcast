@@ -71,16 +71,16 @@ function describeDetail(status: number, detail: unknown): string {
     });
     if (lines.length) return lines.join('；');
   }
-  return STATUS_TEXT[status] ?? `请求失败（${status}）`;
+  return STATUS_TEXT[status] ?? `请求没有成功（HTTP ${status}），请稍后重试。`;
 }
 
 const STATUS_TEXT: Record<number, string> = {
-  0: '无法连接后端服务，请确认 API 已在 8000 端口启动。',
-  403: '复核令牌无效。',
-  404: '记录不存在。',
-  422: '输入未通过校验。',
-  502: '外部服务失败，未产生新结论。',
-  503: '服务未配置。',
+  0: '连不上后端服务。请确认 API 已在 8000 端口启动，然后重试。',
+  403: '复核令牌无效，请检查后重新输入。',
+  404: '找不到这条记录，可能链接有误或记录已不存在。',
+  422: '提交的内容没有通过校验，请检查标注的字段。',
+  502: '外部服务暂时不可用，本次没有产生新结论，可稍后重试。',
+  503: '后端没有启用这项功能。',
 };
 
 type Params = Record<string, string | number | boolean | null | undefined>;

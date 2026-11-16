@@ -244,6 +244,11 @@ export function VerificationJobPanel({ claimId, onFinished }: { claimId: string;
           后端未配置模型{health.data.search ? '' : '与检索服务'}，无法自动核验；不会伪装成已完成 AI 核验。配置方法见 README。
         </p>
       )}
+      {health.data && ready && !health.data.search && (
+        <p className="muted" style={{ fontSize: 13, marginTop: 8 }}>
+          外部检索未配置：任务可能因无法检索而失败，失败不会改变当前判定。
+        </p>
+      )}
       {job && (
         <div className="job" aria-live="polite">
           <strong>{JOB_STATUS[job.status] ?? job.status}</strong>

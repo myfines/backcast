@@ -62,7 +62,7 @@ export function FollowButton({ author, onChange, compact = false }: { author: Pi
   );
 }
 
-export function ExpertCard({ author }: { author: Author }) {
+export function ExpertCard({ author, onFollowChange }: { author: Author; onFollowChange?: (followed: boolean) => void }) {
   const card = author.scorecard;
   const accuracy = card.categorical.accuracy;
   const href = `/experts/${encodeURIComponent(author.id)}`;
@@ -80,7 +80,7 @@ export function ExpertCard({ author }: { author: Author }) {
           </h3>
           <div className="expert-role">{author.role}</div>
         </div>
-        <FollowButton author={author} compact />
+        <FollowButton author={author} compact onChange={onFollowChange} />
       </div>
 
       {author.highlight && <p className="expert-highlight">{author.highlight}</p>}

@@ -142,7 +142,7 @@ export function Discover({ domain, q, followed, page }: { domain: string; q: str
         ) : (
           <div className="grid-cards">
             {list.data.items.map((a) => (
-              <ExpertCard key={a.id} author={a} />
+              <ExpertCard key={`${a.id}:${a.followed}`} author={a} onFollowChange={followed ? list.reload : undefined} />
             ))}
           </div>
         )}

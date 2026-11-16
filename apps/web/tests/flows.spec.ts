@@ -83,6 +83,9 @@ test('import creates persistent conservative report and follow persists', async 
 
   await page.getByRole('link', { name: /我的关注/ }).click();
   await expect(page.locator('.expert-card').filter({ hasText: '测试预测者' })).toBeVisible();
+  // Unfollowing from the follow list removes the card without a manual refresh.
+  await page.getByRole('button', { name: '已关注：测试预测者' }).click();
+  await expect(page.locator('.expert-card').filter({ hasText: '测试预测者' })).toHaveCount(0);
 });
 
 test('review console needs a valid token and writes an audit trail', async ({ page }) => {

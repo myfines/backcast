@@ -79,6 +79,18 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(job["mode"], "provided_excerpt")
         self.assertFalse(job["coverage"]["complete"])
 
+    def test_excerpt_preserves_edit_time_without_inventing_publication(self):
+        body = dict(source_url="https://zhuanlan.zhihu.com/p/123", title="已编辑文章",
+                    text="这是公开文章中有待核查的一段原文材料。", goal="核查公开事实",
+                    edited_at="2026-11-16T16:17:00+08:00")
+        response = self.client.post("/api/v1/text-audits", json=body)
+        self.assertEqual(response.status_code, 201)
+        doc = response.json()["documents"][0]
+        self.assertEqual(doc["edited_at"], body["edited_at"])
+        self.assertIsNone(doc["published_at"])
+        body["edited_at"] = "not-a-date"
+        self.assertEqual(self.client.post("/api/v1/text-audits", json=body).status_code, 422)
+
     def test_analysis_input_budget_is_disclosed(self):
         job = self.client.post(
             "/api/v1/text-audits",

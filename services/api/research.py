@@ -43,6 +43,7 @@ class TextAuditRequest(BaseModel):
     goal: str = Field(min_length=3, max_length=1000)
     domain: str = Field(default="其他", max_length=80)
     published_at: str | None = None
+    edited_at: str | None = None
 
 
 class AnalystEvidence(BaseModel):
@@ -523,7 +524,7 @@ def text_audit(body: TextAuditRequest):
         or u.port not in (None, 443)
     ):
         raise HTTPException(422, "本入口只接受知乎公开材料的来源链接。")
-    if body.published_at and not timestamp(body.published_at):
+    if any(value and not timestamp(value) for value in (body.published_at, body.edited_at)):
         raise HTTPException(422, "日期格式无效。")
     job = new_job("provided_excerpt", url, body.goal, body.domain)
     document = {
@@ -532,7 +533,7 @@ def text_audit(body: TextAuditRequest):
         "title": body.title,
         "text": body.text,
         "published_at": body.published_at,
-        "edited_at": None,
+        "edited_at": body.edited_at,
         "capture_method": "operator_supplied_public_excerpt",
     }
     attach_documents(job, [document])

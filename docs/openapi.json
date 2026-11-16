@@ -3418,6 +3418,17 @@
               }
             ],
             "title": "Published At"
+          },
+          "edited_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Edited At"
           }
         },
         "additionalProperties": false,

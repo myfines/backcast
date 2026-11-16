@@ -1148,6 +1148,8 @@ export interface components {
             domain: string;
             /** Published At */
             published_at?: string | null;
+            /** Edited At */
+            edited_at?: string | null;
         };
         /** ValidationError */
         ValidationError: {

@@ -1,0 +1,123 @@
+diff --git a/archive/core/archiver.py b/archive/core/archiver.py
+index 2349b1a..3cd0366 100644
+--- a/archive/core/archiver.py
++++ b/archive/core/archiver.py
+@@ -11,7 +11,6 @@ from urllib import parse
+ import aiofiles
+ from playwright.async_api import Error as PlaywrightError
+ from playwright.async_api import Page, Playwright, Route, async_playwright
+-from playwright_stealth import Stealth
+ 
+ from archive.config import default, settings
+ from archive.core.base import (
+@@ -1011,7 +1010,7 @@ class Archiver(ZhihuContentWorker):
+                 self.logger.info(f"Claim archive task: {task.task_name}")
+                 try:
+                     await self.configurator.load_to_worker(include_global=False)
+-                    async with Stealth().use_async(async_playwright()) as playwright:
++                    async with async_playwright() as playwright:
+                         if self.browser_semaphore is None:
+                             results = await self.store(
+                                 playwright,
+diff --git a/archive/core/base.py b/archive/core/base.py
+index 91e867a..ac454eb 100644
+--- a/archive/core/base.py
++++ b/archive/core/base.py
+@@ -18,11 +18,9 @@ from playwright.async_api import (
+     Route,
+     async_playwright,
+ )
+-from playwright_stealth import Stealth
+ 
+ from archive.auth_state import AuthStateManager, AuthStateSource
+ from archive.config import default, settings
+-from archive.env import user_agent
+ from archive.storage import SQLiteStore, get_default_store
+ from archive.utils.common import dt_str
+ 
+@@ -125,7 +123,6 @@ async def get_context(
+         storage_state=state_path,
+         locale=locale,
+         **extra,
+-        user_agent=user_agent,
+     )
+     if init:
+         await init(context)
+@@ -588,7 +585,7 @@ class BaseWorker:
+         self.logger.info(f"{self.name} started.")
+         await self.configurator.load_to_worker()
+         while True:
+-            async with Stealth().use_async(async_playwright()) as playwright:
++            async with async_playwright() as playwright:
+                 async with self.rotate():
+                     try:
+                         self.logger.debug(f"{self.name}: New loop")
+@@ -613,7 +610,7 @@ class BaseWorker:
+             "test_url": "https://www.zhihu.com/",  # 未登录访问此地址会跳转到登录页面: https://www.zhihu.com/signin?next=%2F
+             "ok": True,
+         }
+-        async with Stealth().use_async(async_playwright()) as playwright:
++        async with async_playwright() as playwright:
+             async with get_context(
+                 playwright,
+                 state_path=state_path,
+diff --git a/archive/core/reader.py b/archive/core/reader.py
+index 5d0965c..bbe0e0b 100644
+--- a/archive/core/reader.py
++++ b/archive/core/reader.py
+@@ -11,7 +11,6 @@ from playwright.async_api import (
+     async_playwright,
+ )
+ from playwright.async_api import Error as PlaywrightError
+-from playwright_stealth import Stealth
+ 
+ from archive.config import settings
+ from archive.core.archiver import (
+@@ -35,7 +34,6 @@ from archive.core.question import (
+     parse_question_url,
+     read_question,
+ )
+-from archive.env import user_agent
+ 
+ DEFAULT_READER_QUEUE_SIZE = 8
+ 
+@@ -388,7 +386,7 @@ class ReaderWorker(ZhihuContentWorker):
+         """
+         self.logger.info("reader queue loop started.")
+         try:
+-            async with Stealth().use_async(async_playwright()) as playwright:
++            async with async_playwright() as playwright:
+                 self._playwright = playwright
+                 self._ready.set()
+                 while True:
+@@ -505,8 +503,7 @@ class ReaderWorker(ZhihuContentWorker):
+         context = await browser.new_context(
+             storage_state=await self.get_state_path(),
+             locale="zh-CN",
+-            user_agent=user_agent,
+-        )
++            )
+         try:
+             await self.init_context(context)
+         except BaseException:
+diff --git a/archive/services.py b/archive/services.py
+index f9e0dee..8ae04a3 100644
+--- a/archive/services.py
++++ b/archive/services.py
+@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
+ from typing import Any
+ 
+ from playwright.async_api import async_playwright
+-from playwright_stealth import Stealth
+ 
+ from archive.auth_state import AuthStateManager
+ from archive.config import settings
+@@ -264,7 +263,7 @@ class AppServices:
+         )
+         try:
+             async with self.interactive_browser_semaphore:
+-                async with Stealth().use_async(async_playwright()) as playwright:
++                async with async_playwright() as playwright:
+                     await login.get_qrcode(playwright, task)
+         except asyncio.CancelledError:
+             await self.store.set_login_task_status(

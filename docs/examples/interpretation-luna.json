@@ -1,0 +1,12 @@
+{
+  "sample_type": "fictional_behavior_regression_not_real_person_history",
+  "model": "gpt-6-luna",
+  "provenance": "in_session_analysis_agent",
+  "claims": [
+    {"sample":"A","text":"我没有严密推导，但直觉上未来AI需求会利好卖算力的公司。","mode":"intuition","reading":"表达对AI需求与算力公司的方向性看法，并明确说这是直觉判断。","condition_quotes":[],"condition_state":"unknown","logic":{"status":"not_assessed","reason":"样本没有提供推导；按本轮规则，不因直觉缺少严密推导作负面判断。","quotes":[]}},
+    {"sample":"B","text":"如果明年开始降息，我倾向于看好成长股。","mode":"conditional","reading":"只有在明年开始降息的条件下，才表达倾向看好成长股；不是无条件承诺。","condition_quotes":["如果明年开始降息"],"condition_state":"unknown","logic":{"status":"not_assessed","reason":"样本没有给出降息是否发生，也没有展开判断依据。","quotes":[]}},
+    {"sample":"C","text":"一种可能是双方在下一轮谈判后达成临时停火，但也可能继续僵持。","mode":"scenario","reading":"把临时停火列为一种可能，同时保留继续僵持这一可能；没有断言停火必然发生。","condition_quotes":["在下一轮谈判后"],"condition_state":"unknown","logic":{"status":"not_assessed","reason":"这是并列的可能情景，样本没有提供足以核查其逻辑依据的论证。","quotes":[]}},
+    {"sample":"D","text":"订单持续增长，新增产能也已落地。因此我判断明年收入有望增长。","mode":"directional_view","reading":"根据订单持续增长和新增产能落地，判断明年收入有望增长；“有望”表达可能性而非保证。","condition_quotes":[],"condition_state":"unknown","logic":{"status":"coherent","reason":"样本给出了与收入增长判断相关的经营前提，结论以“有望”限定为可能判断。","quotes":["订单持续增长，新增产能也已落地。","因此我判断明年收入有望增长。"]}}
+  ],
+  "limitations":["以上仅对虚构样本作语义与逻辑分类；所有外部事实均未核实。"]
+}

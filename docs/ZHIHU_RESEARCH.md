@@ -1,5 +1,7 @@
 # 知乎历史采集与 Luna 分析试跑
 
+最新进展见 [HISTORY_AND_JUDGMENT.md](./HISTORY_AND_JUDGMENT.md)：已新增 ZhiArchive MCP 适配器，真实部署后仍遇到作者列表访问拒绝；分析规则改为原意优先、直觉不扣分、逻辑加分单列。下文是较早的 CLI 试跑记录。
+
 ## 本次实际结果（2026-11-16）
 
 1. 在隔离环境 `.venv/zhihu-probe` 安装 **pyzhihu-cli 0.2.4**。没有读取浏览器凭证，也未全局安装同名 CLI。

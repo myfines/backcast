@@ -549,6 +549,26 @@ export interface components {
              * @default []
              */
             evidence: components["schemas"]["AnalystEvidence"][];
+            /**
+             * Mode
+             * @default assertion
+             * @enum {string}
+             */
+            mode: "assertion" | "directional_view" | "conditional" | "scenario" | "intuition";
+            /** Reading */
+            reading?: string | null;
+            /**
+             * Condition Quotes
+             * @default []
+             */
+            condition_quotes: string[];
+            /**
+             * Condition State
+             * @default unknown
+             * @enum {string}
+             */
+            condition_state: "met" | "not_met" | "unknown";
+            logic?: components["schemas"]["LogicAssessment"];
         };
         /** AnalystEvidence */
         AnalystEvidence: {
@@ -934,6 +954,22 @@ export interface components {
             } | null;
             /** Error */
             error?: string | null;
+        };
+        /** LogicAssessment */
+        LogicAssessment: {
+            /**
+             * Status
+             * @default not_assessed
+             * @enum {string}
+             */
+            status: "coherent" | "contradictory" | "not_assessed";
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Quotes
+             * @default []
+             */
+            quotes: string[];
         };
         /** Page[AuthorSummary] */
         Page_AuthorSummary_: {

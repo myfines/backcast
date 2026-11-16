@@ -8,6 +8,46 @@ import { CAPTURE_METHOD, PROVENANCE, RESEARCH_STATUS, dateTime, day } from '@/li
 import { isApiNotFound, VerdictMark } from '@/components/claim';
 import { Empty, ErrorState, Notice, Skeleton } from '@/components/ui';
 
+const ACCESS_HINT: Record<string, { title: string; steps: string[] }> = {
+  needs_login: {
+    title: '知乎要求先登录',
+    steps: [
+      '在运行后端的那台电脑上完成知乎登录：运行 scripts/zhihu-login.py，把浏览器里的 Cookie 粘贴到隐藏提示中。',
+      '确认登录文件 .local/zhihu/cookies.json 与后端使用同一个路径（设置过 ZHIHU_COOKIE_FILE 时，登录脚本和后端要一致）。',
+      '完成后点“重试采集”。',
+    ],
+  },
+  blocked: {
+    title: '知乎拒绝了请求',
+    steps: [
+      '检查 .local/zhihu/access-state.json：一次被拒后，同一会话下同一资源不会再发请求。重新登录或确认已修好问题后，可删除它再试一次。',
+      '登录和采集要走同一个网络环境：采集程序会忽略系统代理，浏览器走代理或 VPN 登录时，cookies 可能不被接受。',
+      '确认 cookies 没有过期，并且包含 z_c0。',
+      '如果登录有效仍被拒，这是平台对列表接口的限制，请改用“核查一段公开文字”，不要反复重试。',
+    ],
+  },
+  setup_required: {
+    title: '后端没有装好知乎读取程序',
+    steps: ['安装 requirements-zhihu.txt（建议放在隔离环境 .venv/zhihu-probe）。', '或把环境变量 ZHIHU_PYTHON 指向装有 pyzhihu-cli 的 Python。', '完成后重启后端，再点“重试采集”。'],
+  },
+  invalid_session: {
+    title: '本机登录文件无效',
+    steps: ['登录文件格式不对或已损坏。', '重新运行 scripts/zhihu-login.py 生成新的登录文件，再点“重试采集”。'],
+  },
+  rate_limited: {
+    title: '知乎限制了请求频率',
+    steps: ['先等一段时间，不要连续重试。', '调小“最多读取条数”和“最多翻页数”后再试。'],
+  },
+  network_error: {
+    title: '没有连上知乎',
+    steps: ['检查后端所在电脑的网络，以及是否需要代理（采集程序会忽略系统代理）。', '确认后端能访问 zhihu.com，再点“重试采集”。'],
+  },
+  invalid_response: {
+    title: '读取程序没有返回有效结果',
+    steps: ['确认 pyzhihu-cli 版本与 requirements-zhihu.txt 一致（0.2.4）。', '查看后端终端的输出，再点“重试采集”。'],
+  },
+};
+
 const MODE_LABEL: Record<string, string> = { person_history: '按答主采集历史', provided_excerpt: '核查一段公开文字' };
 
 /** Poll while the backend is working; slower while it waits for an analyst; stop on a final state. */
@@ -147,17 +187,22 @@ function StatusNotice({ job }: { job: ResearchJob }) {
     case 'collecting':
       return <Notice tone="info" title="正在读取公开材料">页面会自动刷新。读取受预算限制，中途被拒绝时会保留已取得的内容。</Notice>;
     case 'needs_login':
+    case 'blocked': {
+      const hint = ACCESS_HINT[job.access_code ?? job.status] ?? ACCESS_HINT.blocked;
       return (
-        <Notice tone="warn" title="知乎要求先登录">
-          {job.error ?? '没有可用的登录态。'} 这不表示这位答主没有历史，也不是对人的评价。请先在本机完成知乎登录（步骤见 docs/ZHIHU_RESEARCH.md），再点“重试采集”。
+        <Notice tone="warn" title={hint.title}>
+          {job.error && <p>{job.error}</p>}
+          <ul className="list-plain" style={{ marginTop: 8 }}>
+            {hint.steps.map((step) => (
+              <li key={step}>· {step}</li>
+            ))}
+          </ul>
+          <p className="muted" style={{ marginTop: 8 }}>
+            这不表示这位答主没有历史，也不是对人的评价。系统已停止请求，不会用重复请求或绕过限制的方式继续。步骤详见 docs/ZHIHU_RESEARCH.md。
+          </p>
         </Notice>
       );
-    case 'blocked':
-      return (
-        <Notice tone="warn" title="知乎拒绝了请求">
-          {job.error ?? '平台拒绝了请求。'} 系统已经停止，不会用重复请求或绕过限制的方式继续。这不表示这位答主没有历史。
-        </Notice>
-      );
+    }
     case 'awaiting_analysis':
       return (
         <Notice tone="info" title="材料已保存，正在等待分析">

@@ -1,0 +1,603 @@
+{
+  "items": [
+    {
+      "id": "kuo",
+      "name": "郭明錤",
+      "domain": "消费科技",
+      "role": "消费电子 · 供应链分析师",
+      "type": "个人",
+      "followed": false,
+      "tags": [
+        "苹果生态",
+        "供应链",
+        "产品发布"
+      ],
+      "scorecard": {
+        "method_version": "backcast-track-record-v1",
+        "as_of": "2026-11-16T04:04:25.168911+00:00",
+        "domain": null,
+        "coverage": {
+          "total_claims": 1,
+          "independent_events": 0,
+          "scored_events": 0,
+          "duplicate_records": 0,
+          "span_days": 0,
+          "active_months": 0,
+          "sampling_confirmed": false
+        },
+        "categorical": {
+          "n": 0,
+          "correct": 0,
+          "wrong": 0,
+          "partial": 0,
+          "accuracy": null,
+          "wilson_95": null
+        },
+        "probabilistic": {
+          "n": 0,
+          "brier": null,
+          "skill_vs_50pct": null,
+          "baseline_brier": 0.25,
+          "calibration": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            }
+          ]
+        },
+        "evidence_quality": {
+          "evidence_count": 1,
+          "dated_evidence_ratio": 1.0,
+          "verified_original_ratio": 0.0,
+          "confirmed_origins": 0,
+          "confirmed_primary_sources": 0
+        },
+        "readiness": {
+          "level": "insufficient",
+          "eligible_for_ranking": false,
+          "pending_reviews": 0,
+          "policy": {
+            "minimum_events": 20,
+            "minimum_span_days": 180,
+            "minimum_active_months": 3,
+            "minimum_paired_events": 10,
+            "calibration_bins": 5
+          },
+          "warnings": [
+            "有效独立事件不足 20 个，不据此推荐专家。",
+            "有效样本发表跨度不足 180 天。",
+            "有效样本不足 3 个活跃月份。",
+            "采样覆盖未经确认，不能排除只挑成功案例。"
+          ]
+        },
+        "exclusions": {
+          "unidentified_event": 1,
+          "unverified_original": 1
+        },
+        "limitations": [
+          "评价的是特定领域的历史判断记录，不是个人诚信或专业资质认证。",
+          "50% 是固定中性基线，不是题目难度调整或市场共识。",
+          "as_of 过滤原文、结果与证据时间，不重放历史数据库或历史复核状态。"
+        ]
+      },
+      "english": "Ming-Chi Kuo",
+      "initials": "郭",
+      "color": "#d7e4db",
+      "bio": "从供应链观察消费电子产品。这里收录其 Vision Pro 上市窗口判断，用公开报道与苹果发布记录对照。",
+      "highlight": "把“何时上市”放回时间线",
+      "takeaway": "一次上市窗口命中，不足以证明长期预测能力。",
+      "started": "2023"
+    },
+    {
+      "id": "gurman",
+      "name": "Mark Gurman",
+      "domain": "消费科技",
+      "role": "消费电子 · 科技产业记者",
+      "type": "个人",
+      "followed": false,
+      "tags": [
+        "苹果生态",
+        "产业报道",
+        "产品发布"
+      ],
+      "scorecard": {
+        "method_version": "backcast-track-record-v1",
+        "as_of": "2026-11-16T04:04:25.170913+00:00",
+        "domain": null,
+        "coverage": {
+          "total_claims": 1,
+          "independent_events": 0,
+          "scored_events": 0,
+          "duplicate_records": 0,
+          "span_days": 0,
+          "active_months": 0,
+          "sampling_confirmed": false
+        },
+        "categorical": {
+          "n": 0,
+          "correct": 0,
+          "wrong": 0,
+          "partial": 0,
+          "accuracy": null,
+          "wilson_95": null
+        },
+        "probabilistic": {
+          "n": 0,
+          "brier": null,
+          "skill_vs_50pct": null,
+          "baseline_brier": 0.25,
+          "calibration": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            }
+          ]
+        },
+        "evidence_quality": {
+          "evidence_count": 1,
+          "dated_evidence_ratio": 1.0,
+          "verified_original_ratio": 0.0,
+          "confirmed_origins": 0,
+          "confirmed_primary_sources": 0
+        },
+        "readiness": {
+          "level": "insufficient",
+          "eligible_for_ranking": false,
+          "pending_reviews": 0,
+          "policy": {
+            "minimum_events": 20,
+            "minimum_span_days": 180,
+            "minimum_active_months": 3,
+            "minimum_paired_events": 10,
+            "calibration_bins": 5
+          },
+          "warnings": [
+            "有效独立事件不足 20 个，不据此推荐专家。",
+            "有效样本发表跨度不足 180 天。",
+            "有效样本不足 3 个活跃月份。",
+            "采样覆盖未经确认，不能排除只挑成功案例。"
+          ]
+        },
+        "exclusions": {
+          "unidentified_event": 1,
+          "unverified_original": 1
+        },
+        "limitations": [
+          "评价的是特定领域的历史判断记录，不是个人诚信或专业资质认证。",
+          "50% 是固定中性基线，不是题目难度调整或市场共识。",
+          "as_of 过滤原文、结果与证据时间，不重放历史数据库或历史复核状态。"
+        ]
+      },
+      "english": "Bloomberg · Technology Reporter",
+      "initials": "MG",
+      "color": "#e0dce9",
+      "bio": "长期报道苹果产业。这里收录其 2023 年 12 月关于 Vision Pro 二月上市计划的前瞻报道，与郭明錤的时间窗口可并排阅读。报道内部计划不等于独立预测模型。",
+      "highlight": "同一产品，不同来源的前瞻判断",
+      "takeaway": "前瞻报道与独立预测有区别；单次结果不能证明长期能力。",
+      "started": "2023"
+    },
+    {
+      "id": "iea",
+      "name": "国际能源署",
+      "domain": "新能源",
+      "role": "新能源 · 国际研究机构",
+      "type": "机构",
+      "followed": false,
+      "tags": [
+        "电动车",
+        "能源转型",
+        "年度展望"
+      ],
+      "scorecard": {
+        "method_version": "backcast-track-record-v1",
+        "as_of": "2026-11-16T04:04:25.172912+00:00",
+        "domain": null,
+        "coverage": {
+          "total_claims": 1,
+          "independent_events": 0,
+          "scored_events": 0,
+          "duplicate_records": 0,
+          "span_days": 0,
+          "active_months": 0,
+          "sampling_confirmed": false
+        },
+        "categorical": {
+          "n": 0,
+          "correct": 0,
+          "wrong": 0,
+          "partial": 0,
+          "accuracy": null,
+          "wilson_95": null
+        },
+        "probabilistic": {
+          "n": 0,
+          "brier": null,
+          "skill_vs_50pct": null,
+          "baseline_brier": 0.25,
+          "calibration": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            }
+          ]
+        },
+        "evidence_quality": {
+          "evidence_count": 1,
+          "dated_evidence_ratio": 1.0,
+          "verified_original_ratio": 0.0,
+          "confirmed_origins": 0,
+          "confirmed_primary_sources": 0
+        },
+        "readiness": {
+          "level": "insufficient",
+          "eligible_for_ranking": false,
+          "pending_reviews": 0,
+          "policy": {
+            "minimum_events": 20,
+            "minimum_span_days": 180,
+            "minimum_active_months": 3,
+            "minimum_paired_events": 10,
+            "calibration_bins": 5
+          },
+          "warnings": [
+            "有效独立事件不足 20 个，不据此推荐专家。",
+            "有效样本发表跨度不足 180 天。",
+            "有效样本不足 3 个活跃月份。",
+            "采样覆盖未经确认，不能排除只挑成功案例。"
+          ]
+        },
+        "exclusions": {
+          "unidentified_event": 1,
+          "unverified_original": 1
+        },
+        "limitations": [
+          "评价的是特定领域的历史判断记录，不是个人诚信或专业资质认证。",
+          "50% 是固定中性基线，不是题目难度调整或市场共识。",
+          "as_of 过滤原文、结果与证据时间，不重放历史数据库或历史复核状态。"
+        ]
+      },
+      "english": "International Energy Agency",
+      "initials": "IEA",
+      "color": "#e5e6ca",
+      "bio": "追踪全球能源市场与电动车转型。这里用年度展望与次年实际统计核对销量预测。",
+      "highlight": "让年度展望接受年度数据检验",
+      "takeaway": "销量量级吻合；需持续收集多年度样本。",
+      "started": "2023"
+    },
+    {
+      "id": "nasa",
+      "name": "NASA",
+      "domain": "航天探索",
+      "role": "航天 · 美国国家航空航天局",
+      "type": "机构",
+      "followed": false,
+      "tags": [
+        "探月计划",
+        "任务进度",
+        "工程实践"
+      ],
+      "scorecard": {
+        "method_version": "backcast-track-record-v1",
+        "as_of": "2026-11-16T04:04:25.174912+00:00",
+        "domain": null,
+        "coverage": {
+          "total_claims": 1,
+          "independent_events": 0,
+          "scored_events": 0,
+          "duplicate_records": 0,
+          "span_days": 0,
+          "active_months": 0,
+          "sampling_confirmed": false
+        },
+        "categorical": {
+          "n": 0,
+          "correct": 0,
+          "wrong": 0,
+          "partial": 0,
+          "accuracy": null,
+          "wilson_95": null
+        },
+        "probabilistic": {
+          "n": 0,
+          "brier": null,
+          "skill_vs_50pct": null,
+          "baseline_brier": 0.25,
+          "calibration": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            }
+          ]
+        },
+        "evidence_quality": {
+          "evidence_count": 1,
+          "dated_evidence_ratio": 1.0,
+          "verified_original_ratio": 0.0,
+          "confirmed_origins": 0,
+          "confirmed_primary_sources": 0
+        },
+        "readiness": {
+          "level": "insufficient",
+          "eligible_for_ranking": false,
+          "pending_reviews": 0,
+          "policy": {
+            "minimum_events": 20,
+            "minimum_span_days": 180,
+            "minimum_active_months": 3,
+            "minimum_paired_events": 10,
+            "calibration_bins": 5
+          },
+          "warnings": [
+            "有效独立事件不足 20 个，不据此推荐专家。",
+            "有效样本发表跨度不足 180 天。",
+            "有效样本不足 3 个活跃月份。",
+            "采样覆盖未经确认，不能排除只挑成功案例。"
+          ]
+        },
+        "exclusions": {
+          "unidentified_event": 1,
+          "unverified_original": 1
+        },
+        "limitations": [
+          "评价的是特定领域的历史判断记录，不是个人诚信或专业资质认证。",
+          "50% 是固定中性基线，不是题目难度调整或市场共识。",
+          "as_of 过滤原文、结果与证据时间，不重放历史数据库或历史复核状态。"
+        ]
+      },
+      "english": "National Aeronautics and Space Administration",
+      "initials": "N",
+      "color": "#dce3ee",
+      "bio": "这里收录 Artemis I 的计划发射窗口及实际发射记录。项目计划用于检验进度兑现，不等同于独立专家预测。",
+      "highlight": "目标日期与实际进度，分开看",
+      "takeaway": "计划延期不代表专业能力差；需要理解任务背景。",
+      "started": "2022"
+    },
+    {
+      "id": "goldman",
+      "name": "高盛研究团队",
+      "domain": "体育赛事",
+      "role": "体育模型 · 研究团队",
+      "type": "机构",
+      "followed": false,
+      "tags": [
+        "世界杯",
+        "概率模型",
+        "赛事分析"
+      ],
+      "scorecard": {
+        "method_version": "backcast-track-record-v1",
+        "as_of": "2026-11-16T04:04:25.175914+00:00",
+        "domain": null,
+        "coverage": {
+          "total_claims": 1,
+          "independent_events": 0,
+          "scored_events": 0,
+          "duplicate_records": 0,
+          "span_days": 0,
+          "active_months": 0,
+          "sampling_confirmed": false
+        },
+        "categorical": {
+          "n": 0,
+          "correct": 0,
+          "wrong": 0,
+          "partial": 0,
+          "accuracy": null,
+          "wilson_95": null
+        },
+        "probabilistic": {
+          "n": 0,
+          "brier": null,
+          "skill_vs_50pct": null,
+          "baseline_brier": 0.25,
+          "calibration": [
+            {
+              "lower": 0.0,
+              "upper": 0.2,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1.0,
+              "n": 0,
+              "mean_probability": null,
+              "observed_frequency": null
+            }
+          ]
+        },
+        "evidence_quality": {
+          "evidence_count": 1,
+          "dated_evidence_ratio": 1.0,
+          "verified_original_ratio": 0.0,
+          "confirmed_origins": 0,
+          "confirmed_primary_sources": 0
+        },
+        "readiness": {
+          "level": "insufficient",
+          "eligible_for_ranking": false,
+          "pending_reviews": 0,
+          "policy": {
+            "minimum_events": 20,
+            "minimum_span_days": 180,
+            "minimum_active_months": 3,
+            "minimum_paired_events": 10,
+            "calibration_bins": 5
+          },
+          "warnings": [
+            "有效独立事件不足 20 个，不据此推荐专家。",
+            "有效样本发表跨度不足 180 天。",
+            "有效样本不足 3 个活跃月份。",
+            "采样覆盖未经确认，不能排除只挑成功案例。"
+          ]
+        },
+        "exclusions": {
+          "unidentified_event": 1,
+          "unverified_original": 1,
+          "unresolved": 1
+        },
+        "limitations": [
+          "评价的是特定领域的历史判断记录，不是个人诚信或专业资质认证。",
+          "50% 是固定中性基线，不是题目难度调整或市场共识。",
+          "as_of 过滤原文、结果与证据时间，不重放历史数据库或历史复核状态。"
+        ]
+      },
+      "english": "Goldman Sachs Research",
+      "initials": "GS",
+      "color": "#eddccf",
+      "bio": "2014 年世界杯模型给巴西最高夺冠概率。此案例展示：单次概率预测落空，不能直接判定概率模型无效。",
+      "highlight": "最大概率，仍然不等于必然",
+      "takeaway": "48.5% 不是保证；概率质量需要多次预测评估。",
+      "started": "2014"
+    }
+  ],
+  "total": 5,
+  "offset": 0,
+  "limit": 20
+}

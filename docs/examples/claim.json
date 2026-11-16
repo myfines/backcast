@@ -1,0 +1,44 @@
+{
+  "id": "vision",
+  "author_id": "kuo",
+  "title": "Vision Pro 会在 1 月底至 2 月初上市",
+  "text": "据 2023 年 12 月的公开报道，郭明錤预计 Vision Pro 最可能在 2024 年 1 月底或 2 月初上架。",
+  "kind": "prediction",
+  "domain": "消费科技",
+  "source_url": "https://www.macrumors.com/2023/12/25/vision-pro-mass-shipments-timing-kuo/",
+  "source_name": "MacRumors · 当日报道",
+  "published_at": "2023-12-25",
+  "edited_at": null,
+  "deadline": "2024-02-10",
+  "outcome_at": null,
+  "original_version_verified": false,
+  "evidence": [
+    {
+      "id": "vision-e",
+      "url": "https://www.apple.com/newsroom/2024/02/apple-vision-pro-arrives-in-apple-store-locations-across-the-us/",
+      "source": "Apple Newsroom",
+      "text": "苹果于 2024 年 2 月 2 日宣布 Vision Pro 已在美国 Apple Store 和线上销售。",
+      "published_at": "2024-02-02",
+      "retrieved_at": "2026-11-16",
+      "verified": true,
+      "origin_url": null,
+      "origin_confirmed": false,
+      "source_type": "unknown",
+      "verification_method": "人工核对公开报道；非历史版本存证"
+    }
+  ],
+  "verdict": {
+    "status": "correct",
+    "reason": "美国实际上市日为 2 月 2 日，与所述窗口吻合。“2 月初”在此按 1—10 日解释；原预测未给出精确日界限。",
+    "citations": [
+      "vision-e"
+    ],
+    "eligible": false,
+    "qualification": "历史原始版本未独立存证；仅做结果复盘，不计入严格预测成绩。"
+  },
+  "event_key": null,
+  "forecast_format": "categorical",
+  "probability": null,
+  "binary_outcome": null,
+  "provenance": "人工整理 · 公开来源转述"
+}

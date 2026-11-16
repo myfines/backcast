@@ -1,0 +1,1 @@
+{"name":"backcast","private":true,"scripts":{"dev":"node scripts/dev.mjs","test":"python -m unittest discover -s tests","build":"npm --prefix apps/web run build","test:e2e":"npm --prefix apps/web run test:e2e"}}

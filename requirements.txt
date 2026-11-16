@@ -1,0 +1,8 @@
+fastapi==0.138.1
+uvicorn==0.49.0
+httpx==0.28.1
+trafilatura==2.2.0
+python-dotenv==1.2.2
+# Pin schema-generating dependencies so the committed OpenAPI stays reproducible.
+pydantic==2.12.5
+starlette==1.3.1

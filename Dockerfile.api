@@ -1,0 +1,7 @@
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt && mkdir -p /data
+COPY services services
+ENV BACKCAST_DB=/data/backcast.sqlite3
+CMD ["python","-m","uvicorn","services.api.main:app","--host","0.0.0.0","--port","8000"]

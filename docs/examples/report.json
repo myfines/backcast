@@ -1,0 +1,268 @@
+{
+  "author": {
+    "id": "kuo",
+    "name": "郭明錤",
+    "domain": "消费科技",
+    "role": "消费电子 · 供应链分析师",
+    "type": "个人",
+    "followed": false,
+    "tags": [
+      "苹果生态",
+      "供应链",
+      "产品发布"
+    ],
+    "scorecard": {
+      "method_version": "backcast-track-record-v1",
+      "as_of": "2026-11-16T04:04:25.190958+00:00",
+      "domain": null,
+      "coverage": {
+        "total_claims": 1,
+        "independent_events": 0,
+        "scored_events": 0,
+        "duplicate_records": 0,
+        "span_days": 0,
+        "active_months": 0,
+        "sampling_confirmed": false
+      },
+      "categorical": {
+        "n": 0,
+        "correct": 0,
+        "wrong": 0,
+        "partial": 0,
+        "accuracy": null,
+        "wilson_95": null
+      },
+      "probabilistic": {
+        "n": 0,
+        "brier": null,
+        "skill_vs_50pct": null,
+        "baseline_brier": 0.25,
+        "calibration": [
+          {
+            "lower": 0.0,
+            "upper": 0.2,
+            "n": 0,
+            "mean_probability": null,
+            "observed_frequency": null
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.4,
+            "n": 0,
+            "mean_probability": null,
+            "observed_frequency": null
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.6,
+            "n": 0,
+            "mean_probability": null,
+            "observed_frequency": null
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.8,
+            "n": 0,
+            "mean_probability": null,
+            "observed_frequency": null
+          },
+          {
+            "lower": 0.8,
+            "upper": 1.0,
+            "n": 0,
+            "mean_probability": null,
+            "observed_frequency": null
+          }
+        ]
+      },
+      "evidence_quality": {
+        "evidence_count": 1,
+        "dated_evidence_ratio": 1.0,
+        "verified_original_ratio": 0.0,
+        "confirmed_origins": 0,
+        "confirmed_primary_sources": 0
+      },
+      "readiness": {
+        "level": "insufficient",
+        "eligible_for_ranking": false,
+        "pending_reviews": 0,
+        "policy": {
+          "minimum_events": 20,
+          "minimum_span_days": 180,
+          "minimum_active_months": 3,
+          "minimum_paired_events": 10,
+          "calibration_bins": 5
+        },
+        "warnings": [
+          "有效独立事件不足 20 个，不据此推荐专家。",
+          "有效样本发表跨度不足 180 天。",
+          "有效样本不足 3 个活跃月份。",
+          "采样覆盖未经确认，不能排除只挑成功案例。"
+        ]
+      },
+      "exclusions": {
+        "unidentified_event": 1,
+        "unverified_original": 1
+      },
+      "limitations": [
+        "评价的是特定领域的历史判断记录，不是个人诚信或专业资质认证。",
+        "50% 是固定中性基线，不是题目难度调整或市场共识。",
+        "as_of 过滤原文、结果与证据时间，不重放历史数据库或历史复核状态。"
+      ]
+    },
+    "english": "Ming-Chi Kuo",
+    "initials": "郭",
+    "color": "#d7e4db",
+    "bio": "从供应链观察消费电子产品。这里收录其 Vision Pro 上市窗口判断，用公开报道与苹果发布记录对照。",
+    "highlight": "把“何时上市”放回时间线",
+    "takeaway": "一次上市窗口命中，不足以证明长期预测能力。",
+    "started": "2023"
+  },
+  "scorecard": {
+    "method_version": "backcast-track-record-v1",
+    "as_of": "2026-11-16T04:04:25.190958+00:00",
+    "domain": null,
+    "coverage": {
+      "total_claims": 1,
+      "independent_events": 0,
+      "scored_events": 0,
+      "duplicate_records": 0,
+      "span_days": 0,
+      "active_months": 0,
+      "sampling_confirmed": false
+    },
+    "categorical": {
+      "n": 0,
+      "correct": 0,
+      "wrong": 0,
+      "partial": 0,
+      "accuracy": null,
+      "wilson_95": null
+    },
+    "probabilistic": {
+      "n": 0,
+      "brier": null,
+      "skill_vs_50pct": null,
+      "baseline_brier": 0.25,
+      "calibration": [
+        {
+          "lower": 0.0,
+          "upper": 0.2,
+          "n": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6,
+          "n": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.8,
+          "n": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 1.0,
+          "n": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ]
+    },
+    "evidence_quality": {
+      "evidence_count": 1,
+      "dated_evidence_ratio": 1.0,
+      "verified_original_ratio": 0.0,
+      "confirmed_origins": 0,
+      "confirmed_primary_sources": 0
+    },
+    "readiness": {
+      "level": "insufficient",
+      "eligible_for_ranking": false,
+      "pending_reviews": 0,
+      "policy": {
+        "minimum_events": 20,
+        "minimum_span_days": 180,
+        "minimum_active_months": 3,
+        "minimum_paired_events": 10,
+        "calibration_bins": 5
+      },
+      "warnings": [
+        "有效独立事件不足 20 个，不据此推荐专家。",
+        "有效样本发表跨度不足 180 天。",
+        "有效样本不足 3 个活跃月份。",
+        "采样覆盖未经确认，不能排除只挑成功案例。"
+      ]
+    },
+    "exclusions": {
+      "unidentified_event": 1,
+      "unverified_original": 1
+    },
+    "limitations": [
+      "评价的是特定领域的历史判断记录，不是个人诚信或专业资质认证。",
+      "50% 是固定中性基线，不是题目难度调整或市场共识。",
+      "as_of 过滤原文、结果与证据时间，不重放历史数据库或历史复核状态。"
+    ]
+  },
+  "claims": [
+    {
+      "id": "vision",
+      "author_id": "kuo",
+      "title": "Vision Pro 会在 1 月底至 2 月初上市",
+      "text": "据 2023 年 12 月的公开报道，郭明錤预计 Vision Pro 最可能在 2024 年 1 月底或 2 月初上架。",
+      "kind": "prediction",
+      "domain": "消费科技",
+      "source_url": "https://www.macrumors.com/2023/12/25/vision-pro-mass-shipments-timing-kuo/",
+      "source_name": "MacRumors · 当日报道",
+      "published_at": "2023-12-25",
+      "edited_at": null,
+      "deadline": "2024-02-10",
+      "outcome_at": null,
+      "original_version_verified": false,
+      "evidence": [
+        {
+          "id": "vision-e",
+          "url": "https://www.apple.com/newsroom/2024/02/apple-vision-pro-arrives-in-apple-store-locations-across-the-us/",
+          "source": "Apple Newsroom",
+          "text": "苹果于 2024 年 2 月 2 日宣布 Vision Pro 已在美国 Apple Store 和线上销售。",
+          "published_at": "2024-02-02",
+          "retrieved_at": "2026-11-16",
+          "verified": true,
+          "origin_url": null,
+          "origin_confirmed": false,
+          "source_type": "unknown",
+          "verification_method": "人工核对公开报道；非历史版本存证"
+        }
+      ],
+      "verdict": {
+        "status": "correct",
+        "reason": "美国实际上市日为 2 月 2 日，与所述窗口吻合。“2 月初”在此按 1—10 日解释；原预测未给出精确日界限。",
+        "citations": [
+          "vision-e"
+        ],
+        "eligible": false,
+        "qualification": "历史原始版本未独立存证；仅做结果复盘，不计入严格预测成绩。"
+      },
+      "event_key": null,
+      "forecast_format": "categorical",
+      "probability": null,
+      "binary_outcome": null,
+      "provenance": "人工整理 · 公开来源转述"
+    }
+  ],
+  "source_count": 1,
+  "generated_at": "2026-11-16T04:04:25.191959+00:00"
+}

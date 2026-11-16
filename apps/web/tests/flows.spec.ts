@@ -114,6 +114,58 @@ test('review console needs a valid token and writes an audit trail', async ({ pa
   await expect(page.locator('.audit-list')).toContainText('证据出处标注');
 });
 
+test('search, append import and casebook domain filter', async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto('/');
+  await page.getByRole('searchbox').fill('Gurman');
+  await expect(page).toHaveURL(/q=Gurman/);
+  await expect(page.locator('.expert-card')).toHaveCount(1);
+  await expect(page.locator('.expert-card')).toContainText('Mark Gurman');
+
+  await page.goto('/import?author=iea');
+  await expect(page.getByRole('tab', { name: '追加到已有档案' })).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('textbox', { name: '原始正文' }).fill('国际能源署预计全球电动车年销量将于2030年12月31日前突破4000万辆，仍需后续数据验证。');
+  await page.getByRole('button', { name: '提取判断，建立档案' }).click();
+  await expect(page.getByText('已为 国际能源署 建立记录')).toBeVisible();
+  await page.getByRole('link', { name: '打开合订本' }).click();
+  await expect(page.getByText('原始材料 2 份')).toBeVisible();
+
+  await page.getByRole('combobox', { name: '领域' }).selectOption('新能源');
+  await expect(page).toHaveURL(/domain=/);
+  await expect(page.locator('.profile-timeline article').first()).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('reviewer can resolve a claim and record sampling', async ({ page }) => {
+  await page.goto('/review');
+  await page.getByRole('textbox', { name: '复核令牌' }).fill(E2E_REVIEW_TOKEN);
+  await page.getByRole('button', { name: '使用令牌' }).click();
+
+  await page.getByRole('tab', { name: '命题裁定' }).click();
+  await page.getByLabel('选择命题').selectOption('vision');
+  const resolve = page.getByRole('form', { name: '命题裁定' });
+  await expect(resolve.getByRole('checkbox').first()).toBeChecked();
+  await resolve.getByLabel('判定 *').selectOption('correct');
+  await resolve.getByLabel('独立事件标识 *').fill('vision-pro-us-launch-2024');
+  await resolve.getByLabel('结果发生时间 *').fill('2024-02-02');
+  await resolve.getByLabel('裁定理由 *').fill('苹果官网确认 2 月 2 日在美国上市，落在所述窗口内。');
+  await resolve.getByLabel('复核人 *').fill('E2E');
+  await resolve.getByRole('button', { name: '提交裁定' }).click();
+  await expect(page.getByText(/^已裁定/)).toBeVisible();
+  await expect(page.locator('.audit-list')).toContainText('人工裁定');
+
+  await page.getByRole('tab', { name: '采样声明' }).click();
+  const sampling = page.getByRole('form', { name: '采样声明' });
+  await sampling.getByLabel('作者 *').selectOption('kuo');
+  await sampling.getByLabel('窗口开始 *').fill('2023-01-01');
+  await sampling.getByLabel('窗口结束 *').fill('2024-06-30');
+  await sampling.getByLabel('来源索引 URL *').fill('https://example.com/kuo-index');
+  await sampling.getByLabel('复核人 *').fill('E2E');
+  await sampling.getByLabel('说明 *').fill('核对作者公开文章索引，窗口内判断已全部收录。');
+  await sampling.getByRole('button', { name: '保存采样声明' }).click();
+  await expect(page.getByText('已记录 郭明錤 在 消费科技 的采样声明')).toBeVisible();
+});
+
 test('mobile fits viewport and menu works', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');

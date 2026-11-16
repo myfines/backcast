@@ -384,7 +384,7 @@ function ClaimList({ ids }: { ids: string[] }) {
           <Link href={`/claims/${encodeURIComponent(c.id)}`} style={{ minWidth: 0 }}>
             {c.title}
           </Link>
-          <VerdictMark status={c.verdict.status} />
+          <VerdictMark status={c.verdict.status} kind={c.kind} />
         </li>
       ))}
     </ul>

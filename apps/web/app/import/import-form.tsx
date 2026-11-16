@@ -204,7 +204,7 @@ export function ImportForm({ authorId }: { authorId: string }) {
                         <br />
                         <small className="muted">截止 {c.deadline ? day(c.deadline) : '未给出'}</small>
                       </span>
-                      <VerdictMark status={c.verdict.status} />
+                      <VerdictMark status={c.verdict.status} kind={c.kind} />
                     </li>
                   ))}
                 </ul>

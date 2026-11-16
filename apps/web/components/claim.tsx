@@ -4,11 +4,11 @@ import { ExternalLink, FileSearch, Loader2, Search, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { api, ApiError, type Claim, type Evidence, type Job } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
-import { AUDIT_ACTION, JOB_STATUS, KIND, SOURCE_TYPE, VERDICT, dateTime, day, pct } from '@/lib/format';
+import { AUDIT_ACTION, JOB_STATUS, KIND, SOURCE_TYPE, VERDICT, dateTime, verdictView, day, pct } from '@/lib/format';
 import { ErrorState, Notice, Skeleton } from './ui';
 
-export function VerdictMark({ status }: { status: Claim['verdict']['status'] }) {
-  const v = VERDICT[status] ?? { label: status, tone: 'muted', hint: '' };
+export function VerdictMark({ status, kind }: { status: Claim['verdict']['status']; kind?: Claim['kind'] }) {
+  const v = verdictView(status, kind);
   return (
     <span className={`stamp ${v.tone}`} title={v.hint}>
       {v.label}
@@ -41,7 +41,7 @@ export function ClaimDossier({ claim, href }: { claim: Claim; href: string }) {
             </div>
             <h3 id={`c-${claim.id}`}>{claim.title}</h3>
           </div>
-          <VerdictMark status={claim.verdict.status} />
+          <VerdictMark status={claim.verdict.status} kind={claim.kind} />
         </div>
         <p className="quote">{claim.text}</p>
         <div className="dossier-meta">
@@ -439,7 +439,7 @@ export function ClaimDetail({ claimId, initial, onChanged, asOf }: { claimId: st
           <h3 id="verdict-h" style={{ fontSize: 15 }}>
             判定
           </h3>
-          <VerdictMark status={c.verdict.status} />
+          <VerdictMark status={c.verdict.status} kind={c.kind} />
         </div>
         <p className="reason">{c.verdict.reason}</p>
         {c.verdict.citations.length > 0 && (

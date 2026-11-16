@@ -186,7 +186,7 @@ function Queue({ claims, authorName, version, onPick }: { claims: Claim[]; autho
                 {claim.title}
               </strong>
             </div>
-            <VerdictMark status={claim.verdict.status} />
+            <VerdictMark status={claim.verdict.status} kind={claim.kind} />
           </div>
           <ul className="review-list">
             {reviews
@@ -242,7 +242,7 @@ function ClaimPicker({ claims, authorName, value, onChange }: { claims: Claim[];
             <span className="dossier-no">
               发表 {day(current.published_at)} · 截止 {current.deadline ? day(current.deadline) : '未给出'}
             </span>
-            <VerdictMark status={current.verdict.status} />
+            <VerdictMark status={current.verdict.status} kind={current.kind} />
           </div>
           <p className="quote" style={{ marginTop: 8, paddingLeft: 12, borderLeft: '2px solid var(--line-2)', fontSize: 14 }}>
             {current.text}

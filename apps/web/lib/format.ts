@@ -39,6 +39,19 @@ export const VERDICT: Record<VerdictStatus, { label: string; tone: string; hint:
   unverifiable: { label: '不可验证', tone: 'muted', hint: '缺少客观检验标准或明确截止日' },
 };
 
+/** Fact statements are checked against evidence, not against an outcome, so they get their own wording. */
+export const FACT_VERDICT: Partial<Record<VerdictStatus, { label: string; hint: string }>> = {
+  correct: { label: '有证据支持', hint: '取得的外部证据支持这条事实陈述' },
+  wrong: { label: '证据与之不符', hint: '取得的外部证据与这条事实陈述不一致' },
+  partial: { label: '部分有证据支持', hint: '证据只支持这条陈述的一部分' },
+};
+
+export function verdictView(status: VerdictStatus, kind?: string) {
+  const base = VERDICT[status] ?? { label: status, tone: 'muted', hint: '' };
+  const fact = kind === 'fact' ? FACT_VERDICT[status] : undefined;
+  return fact ? { ...base, ...fact } : base;
+}
+
 export const KIND: Record<Claim['kind'], string> = { prediction: '预测', fact: '事实陈述', opinion: '观点' };
 
 export const SOURCE_TYPE: Record<string, string> = { primary: '一手来源', secondary: '二手转述', unknown: '来源类型未确认' };

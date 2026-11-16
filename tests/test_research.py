@@ -73,11 +73,33 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(job["status"], "needs_login")
         self.assertEqual(job["coverage"]["captured"], 0)
 
+    def test_configured_zhiarchive_collector_is_used(self):
+        with patch.dict(os.environ, {"ZHIHU_BACKEND": "zhiarchive"}), patch(
+            "services.api.zhiarchive.configured_history", AsyncMock(side_effect=AccessBlocked("blocked", "拒绝访问"))
+        ) as collector:
+            response = self.client.post("/api/v1/research-jobs", json={"target": "example", "goal": "查看历史判断"})
+        collector.assert_awaited_once()
+        job = self.client.get("/api/v1/research-jobs/" + response.json()["id"]).json()
+        self.assertEqual(job["status"], "blocked")
+        self.assertEqual(job["coverage"]["captured"], 0)
+
     def test_material_is_explicitly_not_person_history(self):
         job = self.material()
         self.assertEqual(job["status"], "awaiting_analysis")
         self.assertEqual(job["mode"], "provided_excerpt")
         self.assertFalse(job["coverage"]["complete"])
+
+    def test_excerpt_preserves_edit_time_without_inventing_publication(self):
+        body = dict(source_url="https://zhuanlan.zhihu.com/p/123", title="已编辑文章",
+                    text="这是公开文章中有待核查的一段原文材料。", goal="核查公开事实",
+                    edited_at="2026-11-16T16:17:00+08:00")
+        response = self.client.post("/api/v1/text-audits", json=body)
+        self.assertEqual(response.status_code, 201)
+        doc = response.json()["documents"][0]
+        self.assertEqual(doc["edited_at"], body["edited_at"])
+        self.assertIsNone(doc["published_at"])
+        body["edited_at"] = "not-a-date"
+        self.assertEqual(self.client.post("/api/v1/text-audits", json=body).status_code, 422)
 
     def test_analysis_input_budget_is_disclosed(self):
         job = self.client.post(
@@ -100,6 +122,39 @@ class ResearchTests(unittest.TestCase):
         job = self.material()
         r = self.client.post("/api/v1/research-jobs/" + job["id"] + "/analysis", json=self.output())
         self.assertEqual(r.status_code, 403)
+
+    def test_model_cannot_invent_an_author_condition_before_fetch(self):
+        job = self.material()
+        output = self.output()
+        output["claims"][0].update(mode="conditional", condition_quotes=["前提是股价翻倍。"])
+        with patch("services.api.research.providers.fetch_page", AsyncMock()) as fetch:
+            response = self.client.post("/api/v1/research-jobs/" + job["id"] + "/analysis",
+                                        json=output, headers={"X-Worker-Token": "test-worker"})
+        self.assertEqual(response.status_code, 422)
+        fetch.assert_not_called()
+
+    def test_reasoning_bonus_does_not_mask_a_factual_error(self):
+        job = self.material()
+        output = self.output()
+        output["claims"][0].update(status="wrong", logic=dict(status="coherent",
+            reason="模型认为论证自洽；这不证明前提事实正确。", quotes=["原文指出", "1750亿参数的自回归语言模型"]))
+        with patch("services.api.research.providers.fetch_page", AsyncMock(return_value=dict(
+                url="https://arxiv.org/abs/2005.14165", text="175 billion parameters", detected_date="2020-05-28"))):
+            response = self.client.post("/api/v1/research-jobs/" + job["id"] + "/analysis",
+                                        json=output, headers={"X-Worker-Token": "test-worker"})
+        result = response.json()["result"]
+        self.assertEqual(result["facts"]["contradicted"], 1)
+        self.assertEqual(result["reasoning"]["bonus_points"], 1)
+
+    def test_unresolved_scenario_is_not_a_failed_prediction(self):
+        job = self.material()
+        output = self.output()
+        output["claims"][0].update(kind="prediction", mode="scenario", status="wrong", evidence=[])
+        response = self.client.post("/api/v1/research-jobs/" + job["id"] + "/analysis",
+                                    json=output, headers={"X-Worker-Token": "test-worker"})
+        result = response.json()["result"]
+        self.assertEqual(result["judgments"]["wrong"], 0)
+        self.assertEqual(result["judgments"]["unverifiable"], 1)
 
     def test_quote_validation_before_network(self):
         job = self.material()

@@ -1,8 +1,10 @@
 """One bounded readonly probe; no retries after an access denial."""
 
 import argparse
+import asyncio
 import importlib.metadata
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -14,17 +16,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("target")
     parser.add_argument("--limit", type=int, default=3)
+    parser.add_argument("--backend", choices=["library", "zhiarchive"], default=os.getenv("ZHIHU_BACKEND", "library"))
     args = parser.parse_args()
     if not 1 <= args.limit <= 10:
         parser.error("--limit must be 1..10")
     try:
-        result = collect_history(
-            LibraryTransport(),
-            normalize_target(args.target),
-            max_items=args.limit,
-            max_pages=1,
-            kinds=["answer"],
-        )
+        if args.backend == "zhiarchive":
+            from services.api.zhiarchive import configured_history
+            result = asyncio.run(configured_history(normalize_target(args.target), args.limit, 1, ["answer"]))
+        else:
+            result = collect_history(
+                LibraryTransport(), normalize_target(args.target), max_items=args.limit,
+                max_pages=1, kinds=["answer"],
+            )
         print(
             json.dumps(
                 {

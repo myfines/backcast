@@ -20,6 +20,7 @@ from . import providers, store
 from .rules import decide, timestamp
 from .zhihu import AccessBlocked, LibraryTransport, collect_history, normalize_target
 from .scorecard import canonical_origin
+from .interpretation import interpret, POLICY
 
 
 class ResearchRequest(BaseModel):
@@ -43,6 +44,7 @@ class TextAuditRequest(BaseModel):
     goal: str = Field(min_length=3, max_length=1000)
     domain: str = Field(default="其他", max_length=80)
     published_at: str | None = None
+    edited_at: str | None = None
 
 
 class AnalystEvidence(BaseModel):
@@ -51,6 +53,13 @@ class AnalystEvidence(BaseModel):
     source: str = Field(min_length=1, max_length=200)
     quote: str = Field(min_length=5, max_length=1500)
     published_at: str | None = None
+
+
+class LogicAssessment(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    status: Literal["coherent", "contradictory", "not_assessed"] = "not_assessed"
+    reason: str | None = Field(default=None, max_length=2000)
+    quotes: list[str] = Field(default=[], max_length=6)
 
 
 class AnalystClaim(BaseModel):
@@ -63,6 +72,11 @@ class AnalystClaim(BaseModel):
     reason: str = Field(min_length=5, max_length=3000)
     deadline: str | None = None
     evidence: list[AnalystEvidence] = Field(default=[], max_length=3)
+    mode: Literal["assertion", "directional_view", "conditional", "scenario", "intuition"] = "assertion"
+    reading: str | None = Field(default=None, max_length=1000)
+    condition_quotes: list[str] = Field(default=[], max_length=4)
+    condition_state: Literal["met", "not_met", "unknown"] = "unknown"
+    logic: LogicAssessment = Field(default_factory=LogicAssessment)
 
 
 class AnalystOutput(BaseModel):
@@ -105,6 +119,15 @@ quote必须在原材料中逐字连续存在；证据quote也必须逐字连续�
 不能凭记忆补充证据或把没找到证据判错；不猜作者身份和未公开参数；不依据一篇文章评价整个人。
 输出JSON：{model,claims:[{source_id,quote,statement,kind,status,reason,deadline:null,evidence:[{url,source,quote,published_at}]}],summary,limitations}。
 kind取fact/prediction/opinion。status取correct/wrong/partial/insufficient/unverifiable。最多12条。
+先忠实理解原文，再核查。reading写当时语境下最自然的含义，不强化成绝对承诺。
+mode取assertion（事实或明确预测）、directional_view（方向判断）、conditional（有明确前提）、scenario（可能情景）、intuition（直觉）。
+保留原话中的也许、倾向、条件、对象、时间与范围；不得补造阈值、期限、保证获利等承诺，不因缺少概率或严密推导扣分。
+condition_quotes只取原文连续条件，condition_state取met/not_met/unknown；有独立证据支持前提发生才用met。
+条件未发生不算预测失败；情景是可能路径，不按承诺判错；直觉不因没讲清推导而算逻辑错误。
+logic={status:coherent/contradictory/not_assessed,reason,quotes:[至少两段原文连续引用]}。
+逻辑只分析作者写出的前提与结论是否相容。不得创造不存在的前提、凭常识苛责、因观点不同或证据暂缺判逻辑矛盾。
+逻辑自洽可单独加分，但不能抵消事实错误。事实正确性、判断兑现和逻辑分析分开报告。
+论证中的重要事实前提若可核查，应另提为mode=assertion的事实命题；不能用情景或直觉标签掩盖事实错误。
 若没有经检索取得的证据，status必须是insufficient。不要生成个人总分。"""
 
 
@@ -265,11 +288,15 @@ async def apply_analysis(job, output, fetch_cache=None):
             raise HTTPException(422, "命题引用不在指定原文中，已拒绝保存。")
         if claim.deadline and not timestamp(claim.deadline):
             raise HTTPException(422, "分析返回了无效截止日期。")
-        assignments.append((claim, sources[sid]))
+        try:
+            interpretation = interpret(claim.model_dump(), sources[sid]["text"])
+        except ValueError as error:
+            raise HTTPException(422, str(error)) from error
+        assignments.append((claim, sources[sid], interpretation))
     cache = fetch_cache or {}
     built = []
     rejected = []
-    for index, (candidate, source) in enumerate(assignments):
+    for index, (candidate, source, interpretation) in enumerate(assignments):
         evidence = []
         for item in candidate.evidence:
             url = str(item.url)
@@ -326,6 +353,7 @@ async def apply_analysis(job, output, fetch_cache=None):
             "evidence": evidence,
             "provenance": source["capture_method"],
             "analysis_model": output.model,
+            "interpretation": interpretation,
             "analysis_model_provenance": (
                 "worker_declared" if job.get("analyst") != "openai" else "configured_api"
             ),
@@ -344,6 +372,22 @@ async def apply_analysis(job, output, fetch_cache=None):
                 "citations": [e["id"] for e in evidence],
             },
         )
+        if not interpretation["allow_outcome_verdict"]:
+            verdict.update(status="unverifiable", eligible=False, reason=(
+                "这是可能情景，不能当作必然承诺判定成败。"
+                if candidate.mode == "scenario" else
+                "原文条件未确认发生，不按无条件预测判成败。"
+            ))
+        # Directional views can have an observed direction without a promised
+        # deadline. Show that observation separately from formal forecast hits.
+        observation = None
+        if (candidate.mode in ("directional_view", "intuition") and not candidate.deadline
+                and evidence and candidate.status in ("correct", "wrong", "partial")):
+            observation = {"correct": "supported_so_far", "wrong": "contradicted_so_far", "partial": "mixed_so_far"}[candidate.status]
+        record["judgment_review"] = dict(
+            mode=candidate.mode, observation=observation, reason=candidate.reason,
+            assessment_time=store.utcnow(), counts_as_resolved_forecast=False,
+        )
         record["verdict"] = {
             **verdict,
             "eligible": False,
@@ -353,6 +397,9 @@ async def apply_analysis(job, output, fetch_cache=None):
         built.append(record)
     statuses = Counter(c["verdict"]["status"] for c in built if c["kind"] == "fact")
     fact_count = sum(c["kind"] == "fact" for c in built)
+    judgment_records = [c for c in built if c["kind"] != "fact"]
+    judgment_statuses = Counter(c["verdict"]["status"] for c in judgment_records)
+    reasoning = Counter(c["interpretation"]["logic"]["status"] for c in built)
     result = {
         "model": output.model,
         "model_provenance": (
@@ -367,8 +414,16 @@ async def apply_analysis(job, output, fetch_cache=None):
             "unverifiable": statuses["unverifiable"],
         },
         "claim_ids": [c["id"] for c in built],
+        "policy_version": POLICY,
+        "judgments": {"total": len(judgment_records), **{
+            key: judgment_statuses[key] for key in ("correct", "wrong", "partial", "pending", "insufficient", "unverifiable")}},
+        "reasoning": dict(coherent=reasoning["coherent"], contradictory=reasoning["contradictory"],
+                          not_assessed=reasoning["not_assessed"], bonus_points=reasoning["coherent"],
+                          note="逻辑加分单列，不抵消事实错误；直觉和未决项不因缺少推导扣分。"),
+        "observations": [{"claim_id": c["id"], **c["judgment_review"]}
+                         for c in built if c["judgment_review"]["observation"]],
         "can_recommend_person": False,
-        "summary": f"本批核查 {fact_count} 条事实：{statuses['correct']} 条得到所取证据支持，{statuses['wrong']} 条不符，{statuses['insufficient']} 条证据不足。此结果不足以推荐或否定整个人。",
+        "summary": f"本批核查 {fact_count} 条事实：{statuses['correct']} 条得到所取证据支持，{statuses['wrong']} 条不符，{statuses['insufficient']} 条证据不足；另分析 {len(judgment_records)} 条判断。逻辑自洽加分单列，未决不按错误统计。",
         "analyst_summary": output.summary,
         "limitations": output.limitations + ["仅核查已取得材料；模型判定不是独立的人物能力认证。"],
         "rejected_evidence": rejected,
@@ -439,7 +494,7 @@ async def analyze_openai(job):
             except Exception:
                 continue
         judged = await providers.llm(
-            PROMPT + "仅核查给定命题，证据URL只能选所提供页面。",
+            PROMPT + "仅核查给定命题，证据URL只能选所提供页面。必须保留给定claim的quote、kind、mode、reading和condition_quotes；不能在看到结果后改写作者原意。",
             {
                 "sources": [sources[sid]],
                 "claim": candidate.model_dump(mode="json"),
@@ -447,10 +502,15 @@ async def analyze_openai(job):
             },
         )
         assessment = AnalystOutput.model_validate({**judged, "model": draft.model}).claims[0]
+        if any(getattr(assessment, key) != getattr(candidate, key) for key in
+               ("quote", "kind", "mode", "reading", "condition_quotes")):
+            raise ValueError("核验阶段不能替换原命题的引用、类型或原意。")
         allowed = {p["url"] for p in pages}
         candidate.status = assessment.status
         candidate.reason = assessment.reason
         candidate.evidence = [e for e in assessment.evidence if str(e.url) in allowed]
+        candidate.condition_state = assessment.condition_state
+        candidate.logic = assessment.logic
     draft.claims = draft.claims[:6]
     await apply_analysis(job, draft, cache)
 
@@ -460,14 +520,16 @@ async def execute_collection(id, body):
     job["status"] = "collecting"
     write_job(job)
     try:
-        collected = await asyncio.to_thread(
-            collect_history,
-            LibraryTransport(),
-            job["target"],
-            body.max_items,
-            body.max_pages,
-            body.kinds,
-        )
+        collector = os.getenv("ZHIHU_BACKEND", "library")
+        if collector == "zhiarchive":
+            from .zhiarchive import configured_history
+            collected = await configured_history(job["target"], body.max_items, body.max_pages, body.kinds)
+        elif collector == "library":
+            collected = await asyncio.to_thread(
+                collect_history, LibraryTransport(), job["target"], body.max_items, body.max_pages, body.kinds,
+            )
+        else:
+            raise ValueError("未知采集后端。")
         job["coverage"] = collected["coverage"]
         if not collected["documents"]:
             job.update(status="failed", error="未取得可分析正文；没有生成个人结论。")
@@ -523,7 +585,7 @@ def text_audit(body: TextAuditRequest):
         or u.port not in (None, 443)
     ):
         raise HTTPException(422, "本入口只接受知乎公开材料的来源链接。")
-    if body.published_at and not timestamp(body.published_at):
+    if any(value and not timestamp(value) for value in (body.published_at, body.edited_at)):
         raise HTTPException(422, "日期格式无效。")
     job = new_job("provided_excerpt", url, body.goal, body.domain)
     document = {
@@ -532,7 +594,7 @@ def text_audit(body: TextAuditRequest):
         "title": body.title,
         "text": body.text,
         "published_at": body.published_at,
-        "edited_at": None,
+        "edited_at": body.edited_at,
         "capture_method": "operator_supplied_public_excerpt",
     }
     attach_documents(job, [document])

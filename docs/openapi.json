@@ -1698,6 +1698,52 @@
             "maxItems": 3,
             "title": "Evidence",
             "default": []
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "assertion",
+              "directional_view",
+              "conditional",
+              "scenario",
+              "intuition"
+            ],
+            "title": "Mode",
+            "default": "assertion"
+          },
+          "reading": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reading"
+          },
+          "condition_quotes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 4,
+            "title": "Condition Quotes",
+            "default": []
+          },
+          "condition_state": {
+            "type": "string",
+            "enum": [
+              "met",
+              "not_met",
+              "unknown"
+            ],
+            "title": "Condition State",
+            "default": "unknown"
+          },
+          "logic": {
+            "$ref": "#/components/schemas/LogicAssessment"
           }
         },
         "additionalProperties": false,
@@ -2874,6 +2920,44 @@
         ],
         "title": "Job"
       },
+      "LogicAssessment": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "coherent",
+              "contradictory",
+              "not_assessed"
+            ],
+            "title": "Status",
+            "default": "not_assessed"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "quotes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 6,
+            "title": "Quotes",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LogicAssessment"
+      },
       "Page_AuthorSummary_": {
         "properties": {
           "items": {
@@ -3418,6 +3502,17 @@
               }
             ],
             "title": "Published At"
+          },
+          "edited_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Edited At"
           }
         },
         "additionalProperties": false,

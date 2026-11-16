@@ -9,6 +9,7 @@ test-results/
 playwright-report/
 .venv/
 .headroom-cache/
+.local/
 *.log
 *.tsbuildinfo
 next-env.d.ts

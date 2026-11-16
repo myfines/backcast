@@ -13,7 +13,7 @@
     ],
     "scorecard": {
       "method_version": "backcast-track-record-v1",
-      "as_of": "2026-11-16T04:04:25.190958+00:00",
+      "as_of": "2026-11-16T11:52:18.921572+00:00",
       "domain": null,
       "coverage": {
         "total_claims": 1,
@@ -120,7 +120,7 @@
   },
   "scorecard": {
     "method_version": "backcast-track-record-v1",
-    "as_of": "2026-11-16T04:04:25.190958+00:00",
+    "as_of": "2026-11-16T11:52:18.921572+00:00",
     "domain": null,
     "coverage": {
       "total_claims": 1,
@@ -264,5 +264,5 @@
     }
   ],
   "source_count": 1,
-  "generated_at": "2026-11-16T04:04:25.191959+00:00"
+  "generated_at": "2026-11-16T11:52:18.925440+00:00"
 }

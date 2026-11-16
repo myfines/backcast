@@ -1165,6 +1165,296 @@
         }
       }
     },
+    "/api/v1/research-jobs": {
+      "post": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Research Job",
+        "operationId": "research_job_api_v1_research_jobs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/text-audits": {
+      "post": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Text Audit",
+        "operationId": "text_audit_api_v1_text_audits_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextAuditRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/research-jobs/{id}": {
+      "get": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Research Status",
+        "operationId": "research_status_api_v1_research_jobs__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/research-jobs/{id}/input": {
+      "get": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Research Input",
+        "operationId": "research_input_api_v1_research_jobs__id__input_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "x-worker-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Worker-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/research-jobs/{id}/analysis": {
+      "post": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Research Analysis",
+        "operationId": "research_analysis_api_v1_research_jobs__id__analysis_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "x-worker-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Worker-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalystOutput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/research-jobs/{id}/retry": {
+      "post": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Retry Research",
+        "operationId": "retry_research_api_v1_research_jobs__id__retry_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/import": {
       "post": {
         "tags": [
@@ -1337,6 +1627,184 @@
   },
   "components": {
     "schemas": {
+      "AnalystClaim": {
+        "properties": {
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Quote"
+          },
+          "statement": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Statement"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "fact",
+              "prediction",
+              "opinion"
+            ],
+            "title": "Kind"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "correct",
+              "wrong",
+              "partial",
+              "insufficient",
+              "unverifiable"
+            ],
+            "title": "Status",
+            "default": "insufficient"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 3000,
+            "minLength": 5,
+            "title": "Reason"
+          },
+          "deadline": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/AnalystEvidence"
+            },
+            "type": "array",
+            "maxItems": 3,
+            "title": "Evidence",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quote",
+          "statement",
+          "kind",
+          "reason"
+        ],
+        "title": "AnalystClaim"
+      },
+      "AnalystEvidence": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Url"
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Source"
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 1500,
+            "minLength": 5,
+            "title": "Quote"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "url",
+          "source",
+          "quote"
+        ],
+        "title": "AnalystEvidence"
+      },
+      "AnalystOutput": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Model"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          },
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/AnalystClaim"
+            },
+            "type": "array",
+            "maxItems": 12,
+            "minItems": 1,
+            "title": "Claims"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 3000,
+            "minLength": 5,
+            "title": "Summary"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Limitations",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "model",
+          "claims",
+          "summary"
+        ],
+        "title": "AnalystOutput"
+      },
       "AuthorReport": {
         "properties": {
           "author": {
@@ -2593,6 +3061,182 @@
         ],
         "title": "Readiness"
       },
+      "ResearchJob": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "person_history",
+              "provided_excerpt"
+            ],
+            "title": "Mode"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "collecting",
+              "needs_login",
+              "blocked",
+              "awaiting_analysis",
+              "analyzing",
+              "succeeded",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target"
+          },
+          "goal": {
+            "type": "string",
+            "title": "Goal"
+          },
+          "author_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Id"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "title": "Updated At"
+          },
+          "coverage": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Coverage"
+          },
+          "documents": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Documents"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "id",
+          "mode",
+          "status",
+          "target",
+          "goal",
+          "created_at",
+          "updated_at",
+          "coverage",
+          "documents"
+        ],
+        "title": "ResearchJob"
+      },
+      "ResearchRequest": {
+        "properties": {
+          "target": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Target"
+          },
+          "goal": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Goal"
+          },
+          "domain": {
+            "type": "string",
+            "maxLength": 80,
+            "title": "Domain",
+            "default": "其他"
+          },
+          "max_items": {
+            "type": "integer",
+            "maximum": 40.0,
+            "minimum": 1.0,
+            "title": "Max Items",
+            "default": 20
+          },
+          "max_pages": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Max Pages",
+            "default": 3
+          },
+          "kinds": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "answer",
+                "article"
+              ]
+            },
+            "type": "array",
+            "maxItems": 2,
+            "minItems": 1,
+            "title": "Kinds",
+            "default": [
+              "answer",
+              "article"
+            ]
+          },
+          "analyst": {
+            "type": "string",
+            "enum": [
+              "worker",
+              "openai"
+            ],
+            "title": "Analyst",
+            "default": "worker"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "target",
+          "goal"
+        ],
+        "title": "ResearchRequest"
+      },
       "Review": {
         "properties": {
           "note": {
@@ -2730,6 +3374,61 @@
           "limitations"
         ],
         "title": "Scorecard"
+      },
+      "TextAuditRequest": {
+        "properties": {
+          "source_url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Source Url"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 40000,
+            "minLength": 15,
+            "title": "Text"
+          },
+          "goal": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Goal"
+          },
+          "domain": {
+            "type": "string",
+            "maxLength": 80,
+            "title": "Domain",
+            "default": "其他"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "source_url",
+          "title",
+          "text",
+          "goal"
+        ],
+        "title": "TextAuditRequest"
       },
       "ValidationError": {
         "properties": {

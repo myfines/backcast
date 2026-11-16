@@ -20,6 +20,8 @@ Detailed methods, limits and attribution are recorded in `docs/OPEN_SOURCE_RESEA
 
 ## Runtime dependency notices
 
+Optional data adapter: [BAIGUANGMEI/zhihu-cli](https://github.com/BAIGUANGMEI/zhihu-cli), `pyzhihu-cli==0.2.4`, Apache-2.0. Invoked as a separately installed dependency through a read-only subprocess bridge; no upstream code copied. Installed distributions retain the upstream license. No browser credential extraction or write commands are exposed by the bridge.
+
 Next.js (MIT), React (MIT), Tailwind CSS (MIT), Apache ECharts (Apache-2.0), Lucide (ISC), FastAPI (MIT), Uvicorn (BSD-3-Clause), HTTPX (BSD-3-Clause), Trafilatura (Apache-2.0), python-dotenv (BSD-3-Clause), Playwright (Apache-2.0, development).
 
 Upstream license files are distributed with installed packages. Dependency versions are pinned by the npm lockfile and requirements.txt.

@@ -1,0 +1,2 @@
+# Optional isolated data adapter. Keep the library's Apache-2.0 notice.
+pyzhihu-cli==0.2.4

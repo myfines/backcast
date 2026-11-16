@@ -1,0 +1,10 @@
+{
+  "summary": "后端最终核验结果：1条支持、3条证据不足、0条反驳。作者身份尚未确认；单篇文章节选不足以评价人物历史。",
+  "can_recommend_person": false,
+  "limitations": ["仅依据这组节选及父代理提供的后端核验结果。", "作者身份未确认，单篇节选不代表人物历史。"],
+  "retrieval_provenance": {
+    "tools_actually_called": ["mcp__codex_apps__search_service_web_run"],
+    "urls_actually_opened": [],
+    "evidence_received_from_parent": ["GPT-3论文下载并匹配成功；后端计为1条支持。", "OpenAI ChatGPT页面取证及摘录校验失败；后端未采纳为支持证据。", "后端汇总为1条支持、3条证据不足、0条反驳。"]
+  }
+}

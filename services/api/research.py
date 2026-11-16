@@ -521,7 +521,10 @@ async def execute_collection(id, body):
     write_job(job)
     try:
         collector = os.getenv("ZHIHU_BACKEND", "library")
-        if collector == "zhiarchive":
+        if collector == "edge":
+            from .edge_collector import collect_edge_process
+            collected = await asyncio.to_thread(collect_edge_process, job["target"], body.max_items, body.max_pages, body.kinds)
+        elif collector == "zhiarchive":
             from .zhiarchive import configured_history
             collected = await configured_history(job["target"], body.max_items, body.max_pages, body.kinds)
         elif collector == "library":

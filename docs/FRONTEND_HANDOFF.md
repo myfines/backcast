@@ -27,6 +27,24 @@ npm --prefix apps/web run dev
 
 现有 Next.js rewrite 已把 `/api/*` 代理到 `http://127.0.0.1:8000`。换前端框架也可以，后端默认 CORS 允许本机 3000/5173。
 
+## 当前前端路由（feat/frontend-redesign）
+
+| 路由 | 页面 | 说明 |
+| --- | --- | --- |
+| `/` | 发现预测者 | `?domain=`、`?q=`、`?followed=1`（我的关注）、`?page=`；`/?expert=kuo` 旧分享链接重定向到合订本 |
+| `/experts/{id}` | 合订本 | 判断力面板、时间轴、历史判断；`?as_of=YYYY-MM-DD` 截止日视图，`?domain=`，`?claim={id}` 打开证据抽屉 |
+| `/claims/{id}` | 证据与判定（整页） | 原文、证据、判定引用、核验任务、纠错、审计历史 |
+| `/compare?ids=a,b&domain=` | 对比判断记录 | 2–4 人并排；不满足比较政策时不宣布胜者 |
+| `/import?author={id}` | 添加判断记录 | 新建档案或追加到已有档案 |
+| `/methodology` | 评价方法 | 来自 `GET /api/v1/methodology` |
+| `/review` | 人工复核 | 令牌仅存于当前标签页 sessionStorage，以 `X-Review-Token` 发送 |
+
+前端类型来自 `packages/api-client/schema.d.ts` 的副本 `apps/web/lib/contract/schema.d.ts`（web 镜像的 Docker 构建上下文只有 `apps/web`）。后端更新契约后运行 `npm --prefix apps/web run sync:contract`。
+
+前端发现的契约缺口（未改后端）：
+- 没有跨命题的“待处理纠错”列表接口；复核后台目前逐条请求 `GET /claims/{id}/reviews` 组装队列，数据量变大后需要 `GET /api/v1/reviews?status=pending`。
+- `GET /claims/{id}/reviews` 与 `/claims/{id}/audit` 的条目没有 OpenAPI schema（前端按 `{id,claim_id,note,created_at,status}` 与 `{id,action,record_id,created_at,data}` 解析）。
+
 ## 推荐页面与接口
 
 | 页面 / 动作 | 接口 |

@@ -41,8 +41,9 @@ python scripts/export_contract.py
 
 ## 现有整栈演示
 
-本地可运行的黑客松原型：发现预测者 → 历史合订本 → 证据 → 对比 → 关注。
-前端 Next.js / Tailwind CSS / ECharts；后端 FastAPI / SQLite。
+本地可运行：发现预测者 → 历史合订本 → 证据 → 对比 → 关注，另含导入、评价方法与人工复核后台。
+前端 Next.js / Tailwind CSS / ECharts，全部数据来自 `/api/v1`；后端 FastAPI / SQLite。
+路由与契约说明见 [前端交接说明](docs/FRONTEND_HANDOFF.md#当前前端路由featfrontend-redesign)。
 
 ## 启动
 

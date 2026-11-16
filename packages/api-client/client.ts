@@ -6,6 +6,7 @@ export type Scorecard = components['schemas']['Scorecard'];
 export type Report = components['schemas']['AuthorReport'];
 export type Job = components['schemas']['Job'];
 export type Comparison = components['schemas']['Comparison'];
+export type ResearchJob = components['schemas']['ResearchJob'];
 export type Page<T> = {items:T[];total:number;offset:number;limit:number};
 type Params = Record<string,string|number|boolean|undefined>;
 
@@ -40,5 +41,9 @@ export function createBackcastClient(baseUrl='/api/v1') {
     submitReview:(id:string,note:string)=>post<{id:string;status:string}>('/claims/'+encode(id)+'/reviews',{note}),
     verify:(id:string)=>post<Job>('/claims/'+encode(id)+'/verification-jobs'),
     job:(id:string)=>request<Job>('/jobs/'+encode(id)),
+    research:(body:components['schemas']['ResearchRequest'])=>post<ResearchJob>('/research-jobs',body),
+    researchJob:(id:string)=>request<ResearchJob>('/research-jobs/'+encode(id)),
+    retryResearch:(id:string)=>post<ResearchJob>('/research-jobs/'+encode(id)+'/retry'),
+    textAudit:(body:components['schemas']['TextAuditRequest'])=>post<ResearchJob>('/text-audits',body),
   };
 }

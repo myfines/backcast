@@ -363,6 +363,108 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/research-jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Research Job */
+        post: operations["research_job_api_v1_research_jobs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/text-audits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Text Audit */
+        post: operations["text_audit_api_v1_text_audits_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research-jobs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Research Status */
+        get: operations["research_status_api_v1_research_jobs__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research-jobs/{id}/input": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Research Input */
+        get: operations["research_input_api_v1_research_jobs__id__input_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research-jobs/{id}/analysis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Research Analysis */
+        post: operations["research_analysis_api_v1_research_jobs__id__analysis_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research-jobs/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retry Research */
+        post: operations["retry_research_api_v1_research_jobs__id__retry_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/import": {
         parameters: {
             query?: never;
@@ -419,6 +521,65 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnalystClaim */
+        AnalystClaim: {
+            /** Source Id */
+            source_id?: string | null;
+            /** Quote */
+            quote: string;
+            /** Statement */
+            statement: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "fact" | "prediction" | "opinion";
+            /**
+             * Status
+             * @default insufficient
+             * @enum {string}
+             */
+            status: "correct" | "wrong" | "partial" | "insufficient" | "unverifiable";
+            /** Reason */
+            reason: string;
+            /** Deadline */
+            deadline?: string | null;
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["AnalystEvidence"][];
+        };
+        /** AnalystEvidence */
+        AnalystEvidence: {
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+            /** Source */
+            source: string;
+            /** Quote */
+            quote: string;
+            /** Published At */
+            published_at?: string | null;
+        };
+        /** AnalystOutput */
+        AnalystOutput: {
+            /** Model */
+            model: string;
+            /** Source Id */
+            source_id?: string | null;
+            /** Claims */
+            claims: components["schemas"]["AnalystClaim"][];
+            /** Summary */
+            summary: string;
+            /**
+             * Limitations
+             * @default []
+             */
+            limitations: string[];
+        };
         /** AuthorReport */
         AuthorReport: {
             author: components["schemas"]["AuthorSummary"];
@@ -840,6 +1001,83 @@ export interface components {
             /** Warnings */
             warnings: string[];
         };
+        /** ResearchJob */
+        ResearchJob: {
+            /** Id */
+            id: string;
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "person_history" | "provided_excerpt";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "queued" | "collecting" | "needs_login" | "blocked" | "awaiting_analysis" | "analyzing" | "succeeded" | "failed";
+            /** Target */
+            target: string;
+            /** Goal */
+            goal: string;
+            /** Author Id */
+            author_id?: string | null;
+            /** Created At */
+            created_at: string;
+            /** Updated At */
+            updated_at: string;
+            /** Coverage */
+            coverage: {
+                [key: string]: unknown;
+            };
+            /** Documents */
+            documents: {
+                [key: string]: unknown;
+            }[];
+            /** Result */
+            result?: {
+                [key: string]: unknown;
+            } | null;
+            /** Error */
+            error?: string | null;
+        } & {
+            [key: string]: unknown;
+        };
+        /** ResearchRequest */
+        ResearchRequest: {
+            /** Target */
+            target: string;
+            /** Goal */
+            goal: string;
+            /**
+             * Domain
+             * @default 其他
+             */
+            domain: string;
+            /**
+             * Max Items
+             * @default 20
+             */
+            max_items: number;
+            /**
+             * Max Pages
+             * @default 3
+             */
+            max_pages: number;
+            /**
+             * Kinds
+             * @default [
+             *       "answer",
+             *       "article"
+             *     ]
+             */
+            kinds: ("answer" | "article")[];
+            /**
+             * Analyst
+             * @default worker
+             * @enum {string}
+             */
+            analyst: "worker" | "openai";
+        };
         /** Review */
         Review: {
             /** Note */
@@ -889,6 +1127,27 @@ export interface components {
             };
             /** Limitations */
             limitations: string[];
+        };
+        /** TextAuditRequest */
+        TextAuditRequest: {
+            /**
+             * Source Url
+             * Format: uri
+             */
+            source_url: string;
+            /** Title */
+            title: string;
+            /** Text */
+            text: string;
+            /** Goal */
+            goal: string;
+            /**
+             * Domain
+             * @default 其他
+             */
+            domain: string;
+            /** Published At */
+            published_at?: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -1643,6 +1902,204 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Job"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    research_job_api_v1_research_jobs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchJob"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    text_audit_api_v1_text_audits_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TextAuditRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchJob"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    research_status_api_v1_research_jobs__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchJob"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    research_input_api_v1_research_jobs__id__input_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                "x-worker-token"?: string | null;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    research_analysis_api_v1_research_jobs__id__analysis_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "x-worker-token"?: string | null;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnalystOutput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchJob"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    retry_research_api_v1_research_jobs__id__retry_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchJob"];
                 };
             };
             /** @description Validation Error */

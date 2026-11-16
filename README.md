@@ -29,6 +29,7 @@ python scripts/export_contract.py
 
 ## 后端现有能力
 
+- [知乎历史采集与 Luna 实跑说明](docs/ZHIHU_RESEARCH.md)：可选 pyzhihu-cli 适配器、登录、人物调查任务与 AI 工作器协议。匿名实测被拒绝，正常登录后的直接采集仍待验证。
 - `/api/v1/authors`：档案、搜索、领域过滤、分页；同一博主可追加多篇历史文章。
 - `/api/v1/authors/{id}/scorecard`：独立事件去重、命中率及 Wilson 区间、显式概率的 Brier / 校准、来源和采样覆盖。
 - `/api/v1/authors/{id}/report`：带原文、来源、证据的合订本；支持 `as_of` 截止日期视图。

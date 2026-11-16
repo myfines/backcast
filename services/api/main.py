@@ -294,8 +294,10 @@ async def verify(claim_id: str):
 # Keep the first prototype routes working while the teammate moves to the v1 contract.
 from .v1 import create_router
 from .schemas import ImportResult
+from .research import router as research_router
 
 app.include_router(create_router(verify))
+app.include_router(research_router)
 app.add_api_route(
     "/api/v1/import",
     import_content,

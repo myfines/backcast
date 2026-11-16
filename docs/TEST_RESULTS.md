@@ -2,10 +2,11 @@
 
 ## v0.3 前端重做（feat/frontend-redesign）· 2026-11-16
 
-- Windows 11 / Python 3.13.5 / Node 24.17.0 / Next.js 15.5.29。
+- Windows 11 / Python 3.13.5 / Node 24.17.0 / Next.js 16.4.6 / React 19.3.1。
+- 依赖安全：Next.js 15 内置的 postcss（≤8.5.22）有 4 条已知漏洞（1 高危 1 中危）；升级到 Next.js 16.4.6 后 `npm audit` 为 **0 个漏洞**。升级后 Next 自动把 tsconfig 的 `jsx` 改为 `react-jsx`，并由 `next dev` 生成 `apps/web/AGENTS.md`。
 - 后端单元测试：`python -m unittest discover -s tests`，**62 项通过**（后端未改动）。
 - 生产构建：`npm --prefix apps/web run build` 通过（TypeScript 校验通过，9 个路由）。
-- Playwright / 本机 Chrome：**8 项通过**，25.4 秒，独立 3001 / 8001 服务与 `docs/e2e.sqlite3`：
+- Playwright / 本机 Chrome：**8 项通过**（Next.js 16 下 17.2 秒），独立 3001 / 8001 服务与 `docs/e2e.sqlite3`：
   - 发现 → 领域过滤 → 合订本 → 证据抽屉（IEA 链接）→ 纠错进入列表与审计历史；null 指标显示“样本不足”，无 pageerror。
   - `as_of=2023-12-31` 视图不显示事后结果；跨领域对比显示“跨领域”且不宣布胜者；同领域口径无共同事件时显示“无共同事件”。
   - 导入 2099 年预测 → “尚未到期”、身份未核实提示 → 关注后刷新仍保留 → 出现在“我的关注”。

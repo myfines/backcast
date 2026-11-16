@@ -42,7 +42,7 @@ def health():
     return {
         "ok": True,
         "ai": bool(os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_MODEL")),
-        "search": bool(os.getenv("SEARCH_API_KEY")),
+        "search": providers.search_configured(),
         "mode": "local-single-user",
     }
 
@@ -295,9 +295,11 @@ async def verify(claim_id: str):
 from .v1 import create_router
 from .schemas import ImportResult
 from .research import router as research_router
+from .zhihu_official import router as official_router
 
 app.include_router(create_router(verify))
 app.include_router(research_router)
+app.include_router(official_router)
 app.add_api_route(
     "/api/v1/import",
     import_content,

@@ -45,5 +45,7 @@ export function createBackcastClient(baseUrl='/api/v1') {
     researchJob:(id:string)=>request<ResearchJob>('/research-jobs/'+encode(id)),
     retryResearch:(id:string)=>post<ResearchJob>('/research-jobs/'+encode(id)+'/retry'),
     textAudit:(body:components['schemas']['TextAuditRequest'])=>post<ResearchJob>('/text-audits',body),
+    officialStatus:()=>request<{configured:boolean;provider:string;cookie_required:boolean}>('/official/status'),
+    officialSearch:(body:components['schemas']['OfficialSearchRequest'])=>post<Record<string,unknown>>('/official/search',body),
   };
 }

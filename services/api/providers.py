@@ -131,7 +131,18 @@ async def extract(text):
     return clean, mode
 
 
+def search_configured():
+    if os.getenv("SEARCH_PROVIDER", "tavily") == "zhihu_official":
+        from .zhihu_official import access_secret
+        return bool(access_secret())
+    return bool(os.getenv("SEARCH_API_KEY"))
+
+
 async def search(query):
+    if os.getenv("SEARCH_PROVIDER", "tavily") == "zhihu_official":
+        from .zhihu_official import OfficialClient
+        result = await OfficialClient().search(query, scope="web", count=4)
+        return [{"url": item["url"], "source": item["title"]} for item in result["items"]]
     key = os.getenv("SEARCH_API_KEY")
     if not key:
         raise ValueError("尚未配置搜索 API；不会用模型记忆代替证据。")

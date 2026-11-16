@@ -453,7 +453,7 @@ async def analyze_openai(job):
     if (
         not os.getenv("OPENAI_API_KEY")
         or not os.getenv("OPENAI_MODEL")
-        or not os.getenv("SEARCH_API_KEY")
+        or not providers.search_configured()
     ):
         job.update(
             status="awaiting_analysis",

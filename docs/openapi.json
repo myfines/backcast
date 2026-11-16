@@ -1455,6 +1455,64 @@
         }
       }
     },
+    "/api/v1/official/status": {
+      "get": {
+        "tags": [
+          "official Zhihu"
+        ],
+        "summary": "Official Status",
+        "operationId": "official_status_api_v1_official_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/official/search": {
+      "post": {
+        "tags": [
+          "official Zhihu"
+        ],
+        "summary": "Official Search",
+        "operationId": "official_search_api_v1_official_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfficialSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/import": {
       "post": {
         "tags": [
@@ -2957,6 +3015,50 @@
         "additionalProperties": false,
         "type": "object",
         "title": "LogicAssessment"
+      },
+      "OfficialSearchRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 2,
+            "title": "Query"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "zhihu",
+              "web"
+            ],
+            "title": "Scope",
+            "default": "zhihu"
+          },
+          "count": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Count",
+            "default": 5
+          },
+          "sort_by": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort By"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "OfficialSearchRequest"
       },
       "Page_AuthorSummary_": {
         "properties": {

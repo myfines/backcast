@@ -1,0 +1,46 @@
+{
+  "job_id": "13956e41-f28d-41d1-b77d-b18ec350d732",
+  "status": "succeeded",
+  "mode": "provided_excerpt",
+  "coverage": {
+    "captured": 1,
+    "complete": false,
+    "warnings": [
+      "输入节选不是按答主采集的历史列表，身份与日期待确认。"
+    ]
+  },
+  "result": {
+    "model": "gpt-6-luna",
+    "model_provenance": "worker_declared",
+    "facts": {
+      "total": 4,
+      "supported": 1,
+      "contradicted": 0,
+      "partial": 0,
+      "insufficient": 3,
+      "unverifiable": 0
+    },
+    "claim_ids": [
+      "13956e41-f28d-41d1-b77d-b18ec350d732-c0",
+      "13956e41-f28d-41d1-b77d-b18ec350d732-c1",
+      "13956e41-f28d-41d1-b77d-b18ec350d732-c2",
+      "13956e41-f28d-41d1-b77d-b18ec350d732-c3"
+    ],
+    "can_recommend_person": false,
+    "summary": "本批核查 4 条事实：1 条得到所取证据支持，0 条不符，3 条证据不足。此结果不足以推荐或否定整个人。",
+    "analyst_summary": "这组节选中的GPT-3参数量和ChatGPT使用RLHF有一手来源支持；其他两处参数描述证据不足。",
+    "limitations": [
+      "真实Luna子代理在本次会话生成的结果，节选范围收窄后保存为回放样本；不是持续在线的Luna API。",
+      "仅四处节选，不代表完整文章或答主历史。",
+      "原作者身份和发表时间尚未确认，不用于人物推荐。",
+      "仅核查已取得材料；模型判定不是独立的人物能力认证。"
+    ],
+    "rejected_evidence": [
+      {
+        "url": "https://openai.com/index/chatgpt/",
+        "reason": "fetch_or_quote_validation_failed"
+      }
+    ],
+    "assessment_time": "2026-11-16T11:45:08.103997+00:00"
+  }
+}

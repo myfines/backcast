@@ -20,6 +20,10 @@ Detailed methods, limits and attribution are recorded in `docs/OPEN_SOURCE_RESEA
 
 ## Runtime dependency notices
 
+Author-avatar context rendering adapts `CharacterPromptTemplate.render_context_blocks` from [tinasheosewe/persona-chatbot](https://github.com/tinasheosewe/persona-chatbot), revision `8b48a8f1ed2c400522caf6edc052cb3d06fc046f`, MIT, Copyright (c) 2025 Tinashe Osewe. Adapted file: `services/api/persona_context.py`; full notice: `third_party/persona-chatbot.LICENSE`. Other persona and room logic is independently implemented. Second-Me's Apache-2.0 README/design was researched; its model training stack is not included.
+
+Optional data adapter: [BAIGUANGMEI/zhihu-cli](https://github.com/BAIGUANGMEI/zhihu-cli), `pyzhihu-cli==0.2.4`, Apache-2.0. Invoked as a separately installed dependency through a read-only subprocess bridge; no upstream code copied. Installed distributions retain the upstream license. No browser credential extraction or write commands are exposed by the bridge.
+
 Next.js (MIT), React (MIT), Tailwind CSS (MIT), Apache ECharts (Apache-2.0), Lucide (ISC), FastAPI (MIT), Uvicorn (BSD-3-Clause), HTTPX (BSD-3-Clause), Trafilatura (Apache-2.0), python-dotenv (BSD-3-Clause), Playwright (Apache-2.0, development).
 
 Upstream license files are distributed with installed packages. Dependency versions are pinned by the npm lockfile and requirements.txt.

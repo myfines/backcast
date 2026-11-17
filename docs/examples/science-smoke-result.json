@@ -1,0 +1,54 @@
+{
+  "job_id": "17e38224-db77-45a4-a9b2-2a8fd9748ea9",
+  "status": "succeeded",
+  "mode": "provided_excerpt",
+  "coverage": {
+    "captured": 1,
+    "complete": false,
+    "warnings": [
+      "输入节选不是按答主采集的历史列表，身份与日期待确认。"
+    ]
+  },
+  "result": {
+    "model": "gpt-6-luna",
+    "model_provenance": "worker_declared",
+    "facts": {
+      "total": 3,
+      "supported": 0,
+      "contradicted": 0,
+      "partial": 0,
+      "insufficient": 3,
+      "unverifiable": 0
+    },
+    "claim_ids": [
+      "17e38224-db77-45a4-a9b2-2a8fd9748ea9-c0",
+      "17e38224-db77-45a4-a9b2-2a8fd9748ea9-c1",
+      "17e38224-db77-45a4-a9b2-2a8fd9748ea9-c2"
+    ],
+    "can_recommend_person": false,
+    "summary": "本批核查 3 条事实：0 条得到所取证据支持，0 条不符，3 条证据不足。此结果不足以推荐或否定整个人。",
+    "analyst_summary": "真实浏览器读到的科普摘录，经本次Luna分析后交由后端独立检查外部引用。",
+    "limitations": [
+      "保存的Luna输出经字段适配，用于回放；回放不再次调用模型。",
+      "只确认最后编辑时间，发表时间未知。",
+      "仅三处节选，不代表作者历史覆盖。",
+      "不得从此结果计算个人可靠性或预测能力。",
+      "仅核查已取得材料；模型判定不是独立的人物能力认证。"
+    ],
+    "rejected_evidence": [
+      {
+        "url": "https://www.srs.fs.usda.gov/pubs/ja/uncaptured/ja_wu002.pdf",
+        "reason": "fetch_or_quote_validation_failed"
+      },
+      {
+        "url": "https://ocw.nthu.edu.tw/ocw/upload/77/news/HTchap5.pdf",
+        "reason": "fetch_or_quote_validation_failed"
+      },
+      {
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9312029/",
+        "reason": "fetch_or_quote_validation_failed"
+      }
+    ],
+    "assessment_time": "2026-11-16T12:44:32.804867+00:00"
+  }
+}

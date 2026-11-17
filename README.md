@@ -1,4 +1,10 @@
-# Backcast · 合订本
+# Backcast · 分身讨论室
+
+**当前主题：找一个观点不同的作者分身聊聊，也可以邀请 AI 辩论团。**
+
+队友从 [讨论室交接说明](docs/ROOM_HANDOFF.md) 开始。启动后端后打开 `http://127.0.0.1:8000/api/v1/rooms/playground/ui`，即可新建示例、连续提问、展开原话。[真实三轮讨论记录](docs/examples/discussion-room.html) 保留了模型出错及被追问后纠正的过程。
+
+下面的专家判断档案说明是旧方向，旧接口仍保留供参考。
 
 **想找有判断力的专业人士？先翻翻他的历史记录。**
 
@@ -29,6 +35,7 @@ python scripts/export_contract.py
 
 ## 后端现有能力
 
+- [知乎历史采集与 Luna 实跑说明](docs/ZHIHU_RESEARCH.md)：可选 pyzhihu-cli 适配器、登录、人物调查任务与 AI 工作器协议。匿名实测被拒绝，正常登录后的直接采集仍待验证。
 - `/api/v1/authors`：档案、搜索、领域过滤、分页；同一博主可追加多篇历史文章。
 - `/api/v1/authors/{id}/scorecard`：独立事件去重、命中率及 Wilson 区间、显式概率的 Brier / 校准、来源和采样覆盖。
 - `/api/v1/authors/{id}/report`：带原文、来源、证据的合订本；支持 `as_of` 截止日期视图。

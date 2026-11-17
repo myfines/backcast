@@ -38,6 +38,7 @@ def init():
         CREATE TABLE IF NOT EXISTS follows (author_id TEXT PRIMARY KEY, created_at TEXT);
         CREATE TABLE IF NOT EXISTS audits (id INTEGER PRIMARY KEY, action TEXT, record_id TEXT, created_at TEXT, data TEXT);
         CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, claim_id TEXT NOT NULL, data TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS research_jobs (id TEXT PRIMARY KEY, data TEXT NOT NULL);
         CREATE INDEX IF NOT EXISTS claims_author_idx ON claims(author_id);
         CREATE INDEX IF NOT EXISTS evidence_claim_idx ON evidence(claim_id);
         CREATE INDEX IF NOT EXISTS reviews_claim_idx ON reviews(claim_id);
@@ -55,6 +56,18 @@ def init():
                 c.execute(
                     "UPDATE jobs SET data=? WHERE id=?",
                     (json.dumps(job, ensure_ascii=False), row["id"]),
+                )
+        for row in c.execute("SELECT id,data FROM research_jobs").fetchall():
+            research = json.loads(row["data"])
+            if research["status"] in ("queued", "collecting", "analyzing"):
+                research.update(
+                    status="failed",
+                    error="服务重启，调查中断；已保存的原始材料保留。",
+                    updated_at=utcnow(),
+                )
+                c.execute(
+                    "UPDATE research_jobs SET data=? WHERE id=?",
+                    (json.dumps(research, ensure_ascii=False), row["id"]),
                 )
         for a in EXPERTS:
             c.execute(

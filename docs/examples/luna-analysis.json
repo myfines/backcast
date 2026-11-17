@@ -1,0 +1,20 @@
+{
+  "material": {
+    "source_url": "https://www.zhihu.com/tardis/bd/art/678912290",
+    "title": "深入浅出ChatGPT：技术原理一探究竟（四处短节选）",
+    "text": "GPT-1 | 1.17亿\n总参数达到了1.5亿。\nOpenAI通过训练一个1750亿参数的自回归语言模型，即GPT-3\n在GPT-3.5的基础上，使用人类反馈强化学习训练",
+    "goal": "检查这些技术事实是否有一手证据支持；不评价未知作者的整体可靠性。",
+    "domain": "人工智能"
+  },
+  "analysis": {
+    "model": "gpt-6-luna",
+    "claims": [
+      {"quote":"GPT-1 | 1.17亿","kind":"fact","statement":"表格将GPT-1参数量列为1.17亿。","status":"insufficient","reason":"本轮分析没有取得支持该参数值的一手证据，不因此判错。","evidence":[]},
+      {"quote":"总参数达到了1.5亿。","kind":"fact","statement":"该句所指模型的总参数量为1.5亿。","status":"insufficient","reason":"节选没有明确模型指代，也没有取得核实该数值的一手证据。","evidence":[]},
+      {"quote":"OpenAI通过训练一个1750亿参数的自回归语言模型，即GPT-3","kind":"fact","statement":"GPT-3是一个1750亿参数的自回归语言模型。","status":"correct","reason":"GPT-3论文直接给出1750亿参数和自回归模型的描述。","evidence":[{"url":"https://arxiv.org/abs/2005.14165","source":"GPT-3论文，arXiv","published_at":"2020-05-28","quote":"we train GPT-3, an autoregressive language model with 175 billion parameters"}]},
+      {"quote":"在GPT-3.5的基础上，使用人类反馈强化学习训练","kind":"fact","statement":"ChatGPT使用人类反馈强化学习（RLHF）训练。","status":"correct","reason":"OpenAI的ChatGPT介绍页面明确说明使用RLHF；此处不核实其参数量。","evidence":[{"url":"https://openai.com/index/chatgpt/","source":"OpenAI，Introducing ChatGPT","published_at":"2022-11-30","quote":"We trained this model using Reinforcement Learning from Human Feedback (RLHF)"}]}
+    ],
+    "summary": "这组节选中的GPT-3参数量和ChatGPT使用RLHF有一手来源支持；其他两处参数描述证据不足。",
+    "limitations": ["真实Luna子代理在本次会话生成的结果，节选范围收窄后保存为回放样本；不是持续在线的Luna API。","仅四处节选，不代表完整文章或答主历史。","原作者身份和发表时间尚未确认，不用于人物推荐。"]
+  }
+}

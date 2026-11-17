@@ -10,6 +10,13 @@ export type ResearchJob = components['schemas']['ResearchJob'];
 export type Page<T> = {items:T[];total:number;offset:number;limit:number};
 type Params = Record<string,string|number|boolean|undefined>;
 
+export type SourceQuote = {source_id:string;quote:string};
+export type PersonaFacet = {kind:'view'|'value'|'principle'|'style';description:string;quotes:SourceQuote[]};
+export type AuthorPersona = {id:string;author_name:string;label:string;facets:PersonaFacet[];unknowns:string[];documents:{id:string;url:string;text:string;title?:string}[]};
+export type PersonaReply = {persona_id:string;label:string;text:string;quotes:SourceQuote[];reply_to_quote?:string};
+export type RoomTurn = {role:'user'|'assistant';kind:'user'|'author_avatar'|'fictional_council';name:string;text:string;quotes?:SourceQuote[];reply_to_quote?:string};
+export type DiscussionRoom = {id:string;persona_id:string;topic:string;council:boolean;author_label:string;status:'ready'|'generating'|'failed';turns:RoomTurn[];error?:string};
+
 export class ApiError extends Error {
   constructor(public status:number, public detail:unknown) {
     super(typeof detail === 'string' ? detail : `API request failed (${status})`);
@@ -47,5 +54,12 @@ export function createBackcastClient(baseUrl='/api/v1') {
     textAudit:(body:components['schemas']['TextAuditRequest'])=>post<ResearchJob>('/text-audits',body),
     officialStatus:()=>request<{configured:boolean;provider:string;cookie_required:boolean}>('/official/status'),
     officialSearch:(body:components['schemas']['OfficialSearchRequest'])=>post<Record<string,unknown>>('/official/search',body),
+    createPersona:(body:components['schemas']['AuthorRequest'])=>post<AuthorPersona>('/personas',body),
+    persona:(id:string)=>request<AuthorPersona>('/personas/'+encode(id)),
+    chatWithPersona:(id:string,message:string)=>post<PersonaReply>('/personas/'+encode(id)+'/chat',{message}),
+    createRoom:(body:components['schemas']['RoomRequest'])=>post<DiscussionRoom>('/rooms',body),
+    createDemoRoom:(council=true)=>post<DiscussionRoom>('/rooms/demo',{council}),
+    room:(id:string)=>request<DiscussionRoom>('/rooms/'+encode(id)),
+    sendRoomMessage:(id:string,message:string)=>post<DiscussionRoom>('/rooms/'+encode(id)+'/messages',{message}),
   };
 }

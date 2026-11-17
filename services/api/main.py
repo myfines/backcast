@@ -300,6 +300,12 @@ from .zhihu_official import router as official_router
 app.include_router(create_router(verify))
 app.include_router(research_router)
 app.include_router(official_router)
+from .debate import router as debate_router
+app.include_router(debate_router)
+from .personas import router as persona_router
+app.include_router(persona_router)
+from .rooms import router as room_router
+app.include_router(room_router)
 app.add_api_route(
     "/api/v1/import",
     import_content,

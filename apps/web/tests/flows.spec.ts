@@ -237,3 +237,29 @@ test('research: rejects non-profile targets and audits a public excerpt without 
   await expect(page.getByText('明确断言')).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test('rooms: demo room shows a labelled AI simulation with source quotes and never fakes a reply', async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto('/rooms');
+  await expect(page.getByRole('heading', { level: 1, name: '作者分身讨论室' })).toBeVisible();
+  await expect(page.getByText('这是 AI 依据公开文字生成的模拟，不是作者本人')).toBeVisible();
+  await page.getByRole('button', { name: '进入讨论室' }).click();
+
+  await expect(page).toHaveURL(/\/rooms\/[0-9a-f]{32}$/);
+  await expect(page.getByRole('heading', { level: 1, name: /远程办公/ })).toBeVisible();
+  // Persona card: labelled as a non-author, with the sources and what is still unknown.
+  const card = page.getByRole('region', { name: /AI分身，非本人/ });
+  await expect(card).toBeVisible();
+  await expect(card.getByText('还不了解的部分')).toBeVisible();
+  await card.locator('summary').first().click();
+  await expect(card.getByRole('link', { name: /知乎/ }).first()).toHaveAttribute('href', /zhihu\.com/);
+
+  // E2E has no model credentials: the failure must be shown, and no invented answer may appear.
+  await page.getByRole('textbox', { name: '你的发言' }).fill('我想把远程设为默认，你最担心什么？');
+  await page.getByRole('button', { name: '发送' }).click();
+  await expect(page.getByRole('alert').filter({ hasText: '缺少知乎官方凭证' }).first()).toBeVisible();
+  await expect(page.locator('.turn.user')).toHaveCount(1);
+  await expect(page.locator('.turn.avatar-turn')).toHaveCount(0);
+  await expect(page.locator('.turn.council')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});

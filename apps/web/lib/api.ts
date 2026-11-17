@@ -98,6 +98,40 @@ export type ResearchJob = Omit<Known<S['ResearchJob']>, 'coverage' | 'documents'
   domain?: string;
   access_code?: string;
 };
+export type SourceQuote = { source_id: string; quote: string };
+export type PersonaFacet = { kind: 'view' | 'value' | 'principle' | 'style'; description: string; quotes: SourceQuote[] };
+export type PersonaDocument = { id: string; url: string; title?: string | null; text: string; excerpt_note?: string; is_excerpt?: boolean };
+export type Persona = {
+  id: string;
+  author_name: string;
+  label: string;
+  facets: PersonaFacet[];
+  unknowns: string[];
+  documents: PersonaDocument[];
+  coverage?: { documents?: number; profiled_documents?: number; complete_personality?: boolean; author_identity_verified?: boolean; input_authorship?: string };
+  snapshot_note?: string;
+};
+export type RoomTurn = {
+  role: 'user' | 'assistant';
+  kind: 'user' | 'author_avatar' | 'fictional_council';
+  name: string;
+  text: string;
+  quotes?: SourceQuote[];
+  reply_to_quote?: string;
+  created_at?: string;
+};
+export type Room = {
+  id: string;
+  persona_id: string;
+  topic: string;
+  council: boolean;
+  author_label: string;
+  status: 'ready' | 'generating' | 'failed';
+  turns: RoomTurn[];
+  error?: string;
+  created_at?: string;
+  updated_at?: string;
+};
 export type Page<T> = { items: T[]; total: number; offset: number; limit: number };
 export type Health = { ok: boolean; ai: boolean; search: boolean; mode: string };
 export type Methodology = {
@@ -123,6 +157,10 @@ export class ApiError extends Error {
 /** `detail` may be a string or a Pydantic validation array; make both readable. */
 function describeDetail(status: number, detail: unknown): string {
   if (typeof detail === 'string' && detail) return detail;
+  if (detail && typeof detail === 'object' && !Array.isArray(detail) && typeof (detail as { message?: unknown }).message === 'string') {
+    const d = detail as { message: string; partial_results_saved?: boolean };
+    return d.partial_results_saved ? `${d.message} 已生成的部分内容已保留，可刷新查看。` : d.message;
+  }
   if (Array.isArray(detail)) {
     const lines = (detail as ValidationItem[]).map((d) => {
       const field = (d.loc || []).filter((x) => x !== 'body').join('.');
@@ -200,6 +238,12 @@ export const api = {
   researchJob: (id: string) => request<ResearchJob>(`${V1}/research-jobs/${enc(id)}`),
   retryResearch: (id: string) => send<ResearchJob>('POST', `${V1}/research-jobs/${enc(id)}/retry`),
   textAudit: (body: TextAuditRequest) => send<ResearchJob>('POST', `${V1}/text-audits`, body),
+
+  // Author persona discussion rooms (AI simulation grounded in public text).
+  persona: (id: string) => request<Persona>(`${V1}/personas/${enc(id)}`),
+  createDemoRoom: (council: boolean) => send<Room>('POST', `${V1}/rooms/demo`, { council }),
+  room: (id: string) => request<Room>(`${V1}/rooms/${enc(id)}`),
+  sendRoomMessage: (id: string, message: string) => send<Room>('POST', `${V1}/rooms/${enc(id)}/messages`, { message }),
 
   toggleFollow: (id: string) => send<{ followed: boolean }>('POST', `${V1}/authors/${enc(id)}/follow`),
 

@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, FilePlus2, Search } from 'lucide-react';
+import { ArrowRight, FilePlus2, MessagesSquare, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { allAuthors, api } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
@@ -63,7 +63,10 @@ export function Discover({ domain, q, followed, page }: { domain: string; q: str
             </h1>
             <p>从过去的判断与公开证据出发，找到值得持续关注的人。少看头衔与声量，多看有出处的历史记录。</p>
             <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
-              <Link className="btn primary" href="/research">
+              <Link className="btn primary" href="/rooms">
+                <MessagesSquare size={16} aria-hidden /> 和作者分身讨论
+              </Link>
+              <Link className="btn" href="/research">
                 <Search size={16} aria-hidden /> 调查知乎答主
               </Link>
               <Link className="btn" href="/import">

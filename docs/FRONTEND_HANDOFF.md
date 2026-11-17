@@ -1,5 +1,7 @@
 # Frontend handoff · 给队友和 Claude
 
+> 当前主题已经切换为作者分身讨论室，请先看 [新版对接说明](ROOM_HANDOFF.md)。本页是旧专家合订本接口记录。
+
 ## 你负责什么
 
 前端在 `apps/web/`，可以重写页面和组件。后端位于 `services/api/`，已提供 v1 接口和真实种子案例。

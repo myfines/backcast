@@ -1,0 +1,2 @@
+# Uses installed Microsoft Edge; no separate Chromium download is needed.
+playwright==1.61.0

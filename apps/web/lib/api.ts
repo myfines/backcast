@@ -120,7 +120,19 @@ export type RoomTurn = {
   reply_to_quote?: string;
   created_at?: string;
 };
+export type SummaryItem = { text: string; quotes: { turn: number; quote: string }[] };
+export type RoomSummary = {
+  agreements: SummaryItem[];
+  factual_disagreements: SummaryItem[];
+  value_disagreements: SummaryItem[];
+  concessions: SummaryItem[];
+  open_questions: string[];
+  generated_at: string;
+  note: string;
+  turn_count: number;
+};
 export type Room = {
+  summary?: RoomSummary;
   id: string;
   persona_id: string;
   topic: string;
@@ -133,7 +145,7 @@ export type Room = {
   updated_at?: string;
 };
 export type Page<T> = { items: T[]; total: number; offset: number; limit: number };
-export type Health = { ok: boolean; ai: boolean; search: boolean; mode: string };
+export type Health = { ok: boolean; ai: boolean; search: boolean; official?: boolean; mode: string };
 export type Methodology = {
   version: string;
   policy: Record<string, number>;
@@ -244,6 +256,8 @@ export const api = {
   createDemoRoom: (council: boolean) => send<Room>('POST', `${V1}/rooms/demo`, { council }),
   room: (id: string) => request<Room>(`${V1}/rooms/${enc(id)}`),
   sendRoomMessage: (id: string, message: string) => send<Room>('POST', `${V1}/rooms/${enc(id)}/messages`, { message }),
+
+  summarizeRoom: (id: string) => send<RoomSummary>('POST', `${V1}/rooms/${enc(id)}/summary`),
 
   toggleFollow: (id: string) => send<{ followed: boolean }>('POST', `${V1}/authors/${enc(id)}/follow`),
 

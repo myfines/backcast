@@ -703,6 +703,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/rooms/{room_id}/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Summary */
+        post: operations["summary_api_v1_rooms__room_id__summary_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/import": {
         parameters: {
             query?: never;
@@ -1448,6 +1465,40 @@ export interface components {
              */
             council: boolean;
         };
+        /** RoomSummaryOut */
+        RoomSummaryOut: {
+            /**
+             * Agreements
+             * @default []
+             */
+            agreements: components["schemas"]["SummaryItem"][];
+            /**
+             * Factual Disagreements
+             * @default []
+             */
+            factual_disagreements: components["schemas"]["SummaryItem"][];
+            /**
+             * Value Disagreements
+             * @default []
+             */
+            value_disagreements: components["schemas"]["SummaryItem"][];
+            /**
+             * Concessions
+             * @default []
+             */
+            concessions: components["schemas"]["SummaryItem"][];
+            /**
+             * Open Questions
+             * @default []
+             */
+            open_questions: string[];
+            /** Generated At */
+            generated_at: string;
+            /** Note */
+            note: string;
+            /** Turn Count */
+            turn_count: number;
+        };
         /** SamplingProtocol */
         SamplingProtocol: {
             /**
@@ -1492,6 +1543,23 @@ export interface components {
             };
             /** Limitations */
             limitations: string[];
+        };
+        /** SummaryItem */
+        SummaryItem: {
+            /** Text */
+            text: string;
+            /** Quotes */
+            quotes: components["schemas"]["SummaryQuote"][];
+        };
+        /** SummaryQuote */
+        SummaryQuote: {
+            /**
+             * Turn
+             * @description Index into room.turns
+             */
+            turn: number;
+            /** Quote */
+            quote: string;
         };
         /** TextAuditRequest */
         TextAuditRequest: {
@@ -2631,7 +2699,9 @@ export interface operations {
     create_api_v1_personas_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                "x-admin-token"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -2897,6 +2967,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    summary_api_v1_rooms__room_id__summary_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                room_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoomSummaryOut"];
                 };
             };
             /** @description Validation Error */

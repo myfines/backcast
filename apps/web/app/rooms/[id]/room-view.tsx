@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { FileText, Loader2, Send } from 'lucide-react';
+import { FileText, ListChecks, Loader2, Send } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { api, ApiError, type Room } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
@@ -9,6 +9,7 @@ import { isApiNotFound } from '@/components/claim';
 import { PersonaCard, SimulationNotice } from '@/components/persona';
 import { ConfidenceTracker } from '@/components/confidence';
 import { QuoteUsage } from '@/components/quote-usage';
+import { RoomSummaryCard } from '@/components/room-summary';
 import { Turn, challengeText } from '@/components/room-turn';
 import { Empty, ErrorState, Notice, Skeleton } from '@/components/ui';
 
@@ -20,6 +21,9 @@ export function RoomView({ id }: { id: string }) {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string>();
+  const [summarizing, setSummarizing] = useState(false);
+  const [summaryError, setSummaryError] = useState<string>();
+  const health = useApi('health', api.health);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -59,14 +63,29 @@ export function RoomView({ id }: { id: string }) {
   }, [room?.turns.length]);
 
   const userTurns = room?.turns.filter((t) => t.kind === 'user').length ?? 0;
+  // A round that failed has no answer and does not use up the room's allowance (the backend counts the same way).
+  const rounds = room?.turns.filter((t) => t.kind === 'author_avatar').length ?? 0;
   const text = message.trim();
-  const canSend = !busy && text.length >= 4 && text.length <= 1500 && userTurns < MAX_USER_TURNS;
+  const canSend = !busy && text.length >= 4 && text.length <= 1500 && rounds < MAX_USER_TURNS;
 
   // Fills the follow-up into the input box; the user reads it and decides whether to send (each send costs model calls).
   function challenge(turn: Parameters<typeof challengeText>[0]) {
     setMessage(challengeText(turn));
     setSendError(undefined);
     inputRef.current?.focus();
+  }
+
+  async function summarize() {
+    setSummarizing(true);
+    setSummaryError(undefined);
+    try {
+      const summary = await api.summarizeRoom(id);
+      setRoom((r) => (r ? { ...r, summary } : r));
+    } catch (err) {
+      setSummaryError(err instanceof ApiError ? err.message : '总结没有生成成功，请重试。');
+    } finally {
+      setSummarizing(false);
+    }
   }
 
   async function send(e: React.FormEvent) {
@@ -110,15 +129,20 @@ export function RoomView({ id }: { id: string }) {
         <div>
           <div className="eyebrow" style={{ letterSpacing: 0 }}>{room.council ? '含 AI 辩论团' : '仅与作者分身讨论'}</div>
           <h1 className="page-title">{room.topic}</h1>
-          <p className="lede">正在和“{room.author_label}”讨论。{userTurns} / {MAX_USER_TURNS} 次发言。</p>
+          <p className="lede">正在和“{room.author_label}”讨论。已完成 {rounds} / {MAX_USER_TURNS} 轮。</p>
         </div>
         <a className="btn" href={`/api/v1/rooms/${encodeURIComponent(room.id)}/report`} target="_blank" rel="noreferrer noopener">
           <FileText size={15} aria-hidden /> 查看讨论记录
         </a>
       </header>
 
-      <div style={{ marginBottom: 18 }}>
+      <div style={{ marginBottom: 18, display: 'grid', gap: 12 }}>
         <SimulationNotice />
+        {health.data?.official === false && (
+          <Notice tone="warn" title="后端还没有配置知乎官方凭证">
+            现在发送发言或生成总结会失败，已有的对话仍可查看。配置方法见后端的 .env.example。
+          </Notice>
+        )}
       </div>
 
       <div className="two-col">
@@ -129,7 +153,7 @@ export function RoomView({ id }: { id: string }) {
             </div>
           )}
           {room.turns.map((t, i) => (
-            <Turn key={i} turn={t} persona={persona.data} onChallenge={challenge} challengeDisabled={busy || userTurns >= MAX_USER_TURNS} />
+            <Turn key={i} turn={t} persona={persona.data} onChallenge={challenge} challengeDisabled={busy || rounds >= MAX_USER_TURNS} />
           ))}
           {busy && (
             <div className="card pad" role="status" aria-live="polite" style={{ display: 'flex', gap: 10, alignItems: 'center', fontSize: 14 }}>
@@ -144,6 +168,8 @@ export function RoomView({ id }: { id: string }) {
           )}
           <div ref={endRef} />
 
+          {room.summary && <RoomSummaryCard summary={room.summary} turns={room.turns} />}
+
           <form className="card pad" onSubmit={send} aria-label="发言">
             <label className="field">
               <span>你的发言</span>
@@ -156,11 +182,11 @@ export function RoomView({ id }: { id: string }) {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={1500}
-                disabled={userTurns >= MAX_USER_TURNS}
+                disabled={rounds >= MAX_USER_TURNS}
               />
               <small>4–1500 字。分身最多参考最近 12 条发言。</small>
             </label>
-            {userTurns >= MAX_USER_TURNS && (
+            {rounds >= MAX_USER_TURNS && (
               <div style={{ marginTop: 12 }}>
                 <Notice tone="neutral">本场发言次数已用完，请回到入口新建讨论室。</Notice>
               </div>
@@ -170,7 +196,16 @@ export function RoomView({ id }: { id: string }) {
                 <Notice tone="error">{sendError}</Notice>
               </div>
             )}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 14 }}>
+            {summaryError && (
+              <div style={{ marginTop: 12 }}>
+                <Notice tone="error">{summaryError}</Notice>
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 14, flexWrap: 'wrap' }}>
+              <button type="button" className="btn" onClick={summarize} disabled={busy || summarizing || rounds < 1} title="共识、分歧、让步和待查证的问题，不判输赢">
+                {summarizing ? <Loader2 size={16} className="spin" aria-hidden /> : <ListChecks size={16} aria-hidden />}
+                {room.summary ? '重新生成总结' : '生成讨论总结'}
+              </button>
               <button className="btn primary" disabled={!canSend}>
                 {sending ? <Loader2 size={16} className="spin" aria-hidden /> : <Send size={16} aria-hidden />}
                 发送

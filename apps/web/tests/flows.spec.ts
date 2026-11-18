@@ -314,3 +314,42 @@ test('rooms: challenge button prefills a follow-up, confidence is self-rated and
   await expect(page.getByText('也不说明你的立场对错')).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test('rooms: summary lists consensus and disagreements with cited sentences and picks no winner', async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto('/rooms');
+  await page.getByRole('button', { name: '进入讨论室' }).click();
+  await expect(page).toHaveURL(/\/rooms\/[0-9a-f]{32}$/);
+  const roomId = page.url().split('/').pop()!;
+  // No model credentials in E2E: the button is disabled until the avatar has answered a round.
+  await expect(page.getByRole('button', { name: '生成讨论总结' })).toBeDisabled();
+
+  const recorded = JSON.parse(readFileSync(resolve(__dirname, '../lib/replay/discussion-room.json'), 'utf-8'));
+  await page.route(new RegExp(`/api/v1/rooms/${roomId}$`), (route) => route.fulfill({ json: { ...recorded, id: roomId } }));
+  const quote = recorded.turns[0].text.slice(0, 12);
+  await page.route(new RegExp(`/api/v1/rooms/${roomId}/summary$`), (route) =>
+    route.fulfill({
+      json: {
+        agreements: [{ text: '双方都认为验收标准需要写清楚。', quotes: [{ turn: 0, quote }] }],
+        factual_disagreements: [],
+        value_disagreements: [{ text: '对远程默认的看重程度不同。', quotes: [{ turn: 0, quote }] }],
+        concessions: [],
+        open_questions: ['哪些岗位的交付可以被清楚地验收？'],
+        generated_at: new Date().toISOString(),
+        note: 'AI 生成的总结，可能遗漏或曲解；每一条都附有对话中的原句，请对照核对。总结不判断谁赢。',
+        turn_count: recorded.turns.length,
+      },
+    }),
+  );
+  await page.reload();
+  await expect(page.getByText('已完成 3 / 12 轮')).toBeVisible();
+  await page.getByRole('button', { name: '生成讨论总结' }).click();
+  const card = page.getByRole('region', { name: '讨论总结' });
+  await expect(card).toBeVisible();
+  await expect(card.getByText('共识点')).toBeVisible();
+  await expect(card.getByText('价值分歧')).toBeVisible();
+  await expect(card.getByText('仍待查证')).toBeVisible();
+  await expect(card.getByText('总结不判断谁赢')).toBeVisible();
+  await expect(card.getByText(/赢家|获胜|胜出|胜者/)).toHaveCount(0);
+  expect(errors).toEqual([]);
+});

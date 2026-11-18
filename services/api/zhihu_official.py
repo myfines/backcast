@@ -8,8 +8,10 @@ from urllib.parse import urlparse
 
 from dotenv import dotenv_values
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
+
+from . import guard
 from typing import Literal
 
 from .zhihu import api_date, plain_text
@@ -131,7 +133,7 @@ def official_status():
                 mcp_url=BASE + "/api/mcp/v1")
 
 
-@router.post("/search")
+@router.post("/search", dependencies=[Depends(guard.limit_model)])
 async def official_search(body: OfficialSearchRequest):
     try:
         return await OfficialClient().search(body.query, body.scope, body.count, body.sort_by)

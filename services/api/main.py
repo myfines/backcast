@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from . import store, providers
+from .zhihu_official import access_secret
 from .rules import decide, statistics, timestamp
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
@@ -17,6 +18,9 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 @asynccontextmanager
 async def lifespan(app):
     store.init()
+    from .rooms import recover_interrupted
+
+    recover_interrupted()
     yield
 
 
@@ -43,6 +47,7 @@ def health():
         "ok": True,
         "ai": bool(os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_MODEL")),
         "search": providers.search_configured(),
+        "official": bool(access_secret()),
         "mode": "local-single-user",
     }
 

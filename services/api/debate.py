@@ -11,7 +11,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-from . import store
+from . import guard, store
 from .zhihu_official import OfficialClient, access_secret
 
 
@@ -45,8 +45,14 @@ class DebateModel:
     async def generate(self, system, payload):
         if not self.secret:
             raise DebateError('缺少知乎官方凭证')
-        if self.transport is None and self.last_call:
-            await asyncio.sleep(max(0, 25 - (time.monotonic() - self.last_call)))
+        if self.transport is None:
+            # Spacing and the daily budget are shared by every request in this process, not per request.
+            try:
+                wait = guard.reserve_model_slot()
+            except guard.ModelBusy as busy:
+                raise DebateError(str(busy)) from busy
+            if wait:
+                await asyncio.sleep(wait)
         try:
             async with httpx.AsyncClient(timeout=120, trust_env=False, transport=self.transport) as client:
                 for attempt in range(3):

@@ -16,7 +16,7 @@ from uuid import uuid4
 from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 from typing import Literal
-from . import providers, store
+from . import guard, providers, store
 from .rules import decide, timestamp
 from .zhihu import AccessBlocked, LibraryTransport, collect_history, normalize_target
 from .scorecard import canonical_origin
@@ -561,7 +561,7 @@ async def execute_collection(id, body):
 router = APIRouter(prefix="/api/v1", tags=["person research"])
 
 
-@router.post("/research-jobs", response_model=ResearchJob, status_code=202)
+@router.post("/research-jobs", response_model=ResearchJob, status_code=202, dependencies=[Depends(guard.limit_model)])
 def research_job(body: ResearchRequest, background_tasks: BackgroundTasks):
     try:
         target = normalize_target(body.target)
@@ -631,7 +631,7 @@ async def research_analysis(id: str, body: AnalystOutput):
     return await apply_analysis(read_job(id), body)
 
 
-@router.post("/research-jobs/{id}/retry", response_model=ResearchJob, status_code=202)
+@router.post("/research-jobs/{id}/retry", response_model=ResearchJob, status_code=202, dependencies=[Depends(guard.limit_model)])
 def retry_research(id: str, background_tasks: BackgroundTasks):
     with store.db() as c:
         c.execute("BEGIN IMMEDIATE")

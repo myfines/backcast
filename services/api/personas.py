@@ -8,10 +8,13 @@ import re
 from uuid import uuid4
 from urllib.parse import urlparse
 
-from fastapi import APIRouter, HTTPException
+import hmac
+import os
+
+from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from . import store
+from . import guard, store
 from .debate import DebateModel, DebateError, SYSTEM, SourceQuote, validate_quotes, validate_reply
 from .persona_context import render_context_blocks
 
@@ -103,7 +106,7 @@ async def build_persona(body, model=None):
     return persona
 
 
-async def reply(persona_id, message, model=None, history=None):
+async def reply(persona_id, message, model=None, history=None, correction=None):
     persona = load(persona_id)
     docs = retrieve(persona, message)
     context = [{**d,'text':d['text'][:2400]} for d in docs]
@@ -123,7 +126,8 @@ async def reply(persona_id, message, model=None, history=None):
              'interpretation':[f["kind"]+': '+f['description'] for f in persona['facets']],
              'disambiguation':persona['unknowns'],
              'textual_evidence':[d['id']+' '+d['text'] for d in context]}),
-         'message':message})
+         'message':message,
+         **({'格式纠正':correction} if correction else {})})
     if not isinstance(result.get('text'), str) or not 10 <= len(result['text']) <= 1800 or not result.get('quotes'):
         raise ValueError('回答缺少正文或来源')
     validate_quotes([SourceQuote(**q) for q in result['quotes']], context)
@@ -143,7 +147,18 @@ class ChatRequest(BaseModel):
 router = APIRouter(prefix='/api/v1/personas', tags=['author personas'])
 
 
-@router.post('')
+def persona_admin(x_admin_token: str | None = Header(default=None)):
+    """Optional gate: with PERSONA_ADMIN_TOKEN set, only the operator may build personas from supplied text.
+
+    Persona text is supplied by the caller and not verified against the linked page, so on a public
+    deployment anyone could otherwise attach invented words to a real author's Zhihu link.
+    """
+    expected = os.getenv('PERSONA_ADMIN_TOKEN', '')
+    if expected and not (x_admin_token and hmac.compare_digest(expected, x_admin_token)):
+        raise HTTPException(403, '创建作者分身需要管理令牌。')
+
+
+@router.post('', dependencies=[Depends(persona_admin), Depends(guard.limit_model)])
 async def create(body: AuthorRequest):
     try:
         return await build_persona(body)
@@ -156,7 +171,7 @@ def read(persona_id: str):
     return load(persona_id)
 
 
-@router.post('/{persona_id}/chat')
+@router.post('/{persona_id}/chat', dependencies=[Depends(guard.limit_model)])
 async def chat(persona_id: str, body: ChatRequest):
     try:
         return await reply(persona_id, body.message)

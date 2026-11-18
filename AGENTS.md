@@ -1,7 +1,7 @@
 # Backcast team contract
 
 ## Goal
-Help users find people with demonstrated forecasting ability by examining public historical claims and actual evidence. Do not invent expert ratings, records, citations, or sample sizes.
+Current product: find differing public viewpoints, build source-grounded author avatars, and let a user discuss with an avatar plus an optional fictional AI panel. Read docs/ROOM_HANDOFF.md first. Older forecasting and expert-score routes are legacy. Do not invent author identities, opinions, citations, scores, or sample sizes.
 
 ## Ownership
 - Backend: `services/`, `tests/`, `docs/openapi.json`, `scripts/export_contract.py`.

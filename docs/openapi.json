@@ -1165,6 +1165,895 @@
         }
       }
     },
+    "/api/v1/research-jobs": {
+      "post": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Research Job",
+        "operationId": "research_job_api_v1_research_jobs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/text-audits": {
+      "post": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Text Audit",
+        "operationId": "text_audit_api_v1_text_audits_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextAuditRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/research-jobs/{id}": {
+      "get": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Research Status",
+        "operationId": "research_status_api_v1_research_jobs__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/research-jobs/{id}/input": {
+      "get": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Research Input",
+        "operationId": "research_input_api_v1_research_jobs__id__input_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "x-worker-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Worker-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/research-jobs/{id}/analysis": {
+      "post": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Research Analysis",
+        "operationId": "research_analysis_api_v1_research_jobs__id__analysis_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "x-worker-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Worker-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalystOutput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/research-jobs/{id}/retry": {
+      "post": {
+        "tags": [
+          "person research"
+        ],
+        "summary": "Retry Research",
+        "operationId": "retry_research_api_v1_research_jobs__id__retry_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/official/status": {
+      "get": {
+        "tags": [
+          "official Zhihu"
+        ],
+        "summary": "Official Status",
+        "operationId": "official_status_api_v1_official_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/official/search": {
+      "post": {
+        "tags": [
+          "official Zhihu"
+        ],
+        "summary": "Official Search",
+        "operationId": "official_search_api_v1_official_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfficialSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debates": {
+      "post": {
+        "tags": [
+          "avatar debates"
+        ],
+        "summary": "Create Debate",
+        "operationId": "create_debate_api_v1_debates_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debates/{debate_id}": {
+      "get": {
+        "tags": [
+          "avatar debates"
+        ],
+        "summary": "Read Debate",
+        "operationId": "read_debate_api_v1_debates__debate_id__get",
+        "parameters": [
+          {
+            "name": "debate_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Debate Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debates/{debate_id}/report": {
+      "get": {
+        "tags": [
+          "avatar debates"
+        ],
+        "summary": "Report",
+        "operationId": "report_api_v1_debates__debate_id__report_get",
+        "parameters": [
+          {
+            "name": "debate_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Debate Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/personas": {
+      "post": {
+        "tags": [
+          "author personas"
+        ],
+        "summary": "Create",
+        "operationId": "create_api_v1_personas_post",
+        "parameters": [
+          {
+            "name": "x-admin-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/personas/{persona_id}": {
+      "get": {
+        "tags": [
+          "author personas"
+        ],
+        "summary": "Read",
+        "operationId": "read_api_v1_personas__persona_id__get",
+        "parameters": [
+          {
+            "name": "persona_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Persona Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/personas/{persona_id}/chat": {
+      "post": {
+        "tags": [
+          "author personas"
+        ],
+        "summary": "Chat",
+        "operationId": "chat_api_v1_personas__persona_id__chat_post",
+        "parameters": [
+          {
+            "name": "persona_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Persona Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rooms/playground/ui": {
+      "get": {
+        "tags": [
+          "discussion rooms"
+        ],
+        "summary": "Playground",
+        "operationId": "playground_api_v1_rooms_playground_ui_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rooms/demo": {
+      "post": {
+        "tags": [
+          "discussion rooms"
+        ],
+        "summary": "Demo",
+        "operationId": "demo_api_v1_rooms_demo_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rooms": {
+      "post": {
+        "tags": [
+          "discussion rooms"
+        ],
+        "summary": "Create",
+        "operationId": "create_api_v1_rooms_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoomRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rooms/{room_id}": {
+      "get": {
+        "tags": [
+          "discussion rooms"
+        ],
+        "summary": "Read",
+        "operationId": "read_api_v1_rooms__room_id__get",
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Room Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rooms/{room_id}/report": {
+      "get": {
+        "tags": [
+          "discussion rooms"
+        ],
+        "summary": "Report",
+        "operationId": "report_api_v1_rooms__room_id__report_get",
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Room Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rooms/{room_id}/messages": {
+      "post": {
+        "tags": [
+          "discussion rooms"
+        ],
+        "summary": "Message",
+        "operationId": "message_api_v1_rooms__room_id__messages_post",
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Room Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoomMessage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rooms/{room_id}/summary": {
+      "post": {
+        "tags": [
+          "discussion rooms"
+        ],
+        "summary": "Summary",
+        "operationId": "summary_api_v1_rooms__room_id__summary_post",
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Room Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomSummaryOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/import": {
       "post": {
         "tags": [
@@ -1337,6 +2226,280 @@
   },
   "components": {
     "schemas": {
+      "AnalystClaim": {
+        "properties": {
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Quote"
+          },
+          "statement": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Statement"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "fact",
+              "prediction",
+              "opinion"
+            ],
+            "title": "Kind"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "correct",
+              "wrong",
+              "partial",
+              "insufficient",
+              "unverifiable"
+            ],
+            "title": "Status",
+            "default": "insufficient"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 3000,
+            "minLength": 5,
+            "title": "Reason"
+          },
+          "deadline": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/AnalystEvidence"
+            },
+            "type": "array",
+            "maxItems": 3,
+            "title": "Evidence",
+            "default": []
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "assertion",
+              "directional_view",
+              "conditional",
+              "scenario",
+              "intuition"
+            ],
+            "title": "Mode",
+            "default": "assertion"
+          },
+          "reading": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reading"
+          },
+          "condition_quotes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 4,
+            "title": "Condition Quotes",
+            "default": []
+          },
+          "condition_state": {
+            "type": "string",
+            "enum": [
+              "met",
+              "not_met",
+              "unknown"
+            ],
+            "title": "Condition State",
+            "default": "unknown"
+          },
+          "logic": {
+            "$ref": "#/components/schemas/LogicAssessment"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quote",
+          "statement",
+          "kind",
+          "reason"
+        ],
+        "title": "AnalystClaim"
+      },
+      "AnalystEvidence": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Url"
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Source"
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 1500,
+            "minLength": 5,
+            "title": "Quote"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "url",
+          "source",
+          "quote"
+        ],
+        "title": "AnalystEvidence"
+      },
+      "AnalystOutput": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Model"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          },
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/AnalystClaim"
+            },
+            "type": "array",
+            "maxItems": 12,
+            "minItems": 1,
+            "title": "Claims"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 3000,
+            "minLength": 5,
+            "title": "Summary"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Limitations",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "model",
+          "claims",
+          "summary"
+        ],
+        "title": "AnalystOutput"
+      },
+      "AuthorDocument": {
+        "properties": {
+          "author_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Author Name"
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Url"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 10,
+            "title": "Text"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 300,
+            "title": "Title",
+            "default": ""
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "is_excerpt": {
+            "type": "boolean",
+            "title": "Is Excerpt",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "author_name",
+          "url",
+          "text"
+        ],
+        "title": "AuthorDocument"
+      },
       "AuthorReport": {
         "properties": {
           "author": {
@@ -1370,6 +2533,31 @@
           "generated_at"
         ],
         "title": "AuthorReport"
+      },
+      "AuthorRequest": {
+        "properties": {
+          "author_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Author Name"
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/AuthorDocument"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "minItems": 1,
+            "title": "Documents"
+          }
+        },
+        "type": "object",
+        "required": [
+          "author_name",
+          "documents"
+        ],
+        "title": "AuthorRequest"
       },
       "AuthorSummary": {
         "properties": {
@@ -1523,6 +2711,21 @@
           "wilson_95"
         ],
         "title": "CategoricalMetrics"
+      },
+      "ChatRequest": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "maxLength": 1500,
+            "minLength": 2,
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "ChatRequest"
       },
       "Claim": {
         "properties": {
@@ -1911,6 +3114,50 @@
           "domain"
         ],
         "title": "CreateAuthor"
+      },
+      "DebateRequest": {
+        "properties": {
+          "topic": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 4,
+            "title": "Topic",
+            "default": "远程办公是否应成为知识工作的默认模式"
+          },
+          "stance": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 4,
+            "title": "Stance",
+            "default": "我倾向远程优先，看重自主安排与节省通勤，但不认为所有岗位都适用。"
+          },
+          "opponent_persona_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Persona Id"
+          }
+        },
+        "type": "object",
+        "title": "DebateRequest"
+      },
+      "DemoRequest": {
+        "properties": {
+          "council": {
+            "type": "boolean",
+            "title": "Council",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "DemoRequest"
       },
       "Evidence": {
         "properties": {
@@ -2406,6 +3653,88 @@
         ],
         "title": "Job"
       },
+      "LogicAssessment": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "coherent",
+              "contradictory",
+              "not_assessed"
+            ],
+            "title": "Status",
+            "default": "not_assessed"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "quotes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 6,
+            "title": "Quotes",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LogicAssessment"
+      },
+      "OfficialSearchRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 2,
+            "title": "Query"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "zhihu",
+              "web"
+            ],
+            "title": "Scope",
+            "default": "zhihu"
+          },
+          "count": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Count",
+            "default": 5
+          },
+          "sort_by": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort By"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "OfficialSearchRequest"
+      },
       "Page_AuthorSummary_": {
         "properties": {
           "items": {
@@ -2593,6 +3922,182 @@
         ],
         "title": "Readiness"
       },
+      "ResearchJob": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "person_history",
+              "provided_excerpt"
+            ],
+            "title": "Mode"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "collecting",
+              "needs_login",
+              "blocked",
+              "awaiting_analysis",
+              "analyzing",
+              "succeeded",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target"
+          },
+          "goal": {
+            "type": "string",
+            "title": "Goal"
+          },
+          "author_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Id"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "title": "Updated At"
+          },
+          "coverage": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Coverage"
+          },
+          "documents": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Documents"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "id",
+          "mode",
+          "status",
+          "target",
+          "goal",
+          "created_at",
+          "updated_at",
+          "coverage",
+          "documents"
+        ],
+        "title": "ResearchJob"
+      },
+      "ResearchRequest": {
+        "properties": {
+          "target": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Target"
+          },
+          "goal": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Goal"
+          },
+          "domain": {
+            "type": "string",
+            "maxLength": 80,
+            "title": "Domain",
+            "default": "其他"
+          },
+          "max_items": {
+            "type": "integer",
+            "maximum": 40.0,
+            "minimum": 1.0,
+            "title": "Max Items",
+            "default": 20
+          },
+          "max_pages": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Max Pages",
+            "default": 3
+          },
+          "kinds": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "answer",
+                "article"
+              ]
+            },
+            "type": "array",
+            "maxItems": 2,
+            "minItems": 1,
+            "title": "Kinds",
+            "default": [
+              "answer",
+              "article"
+            ]
+          },
+          "analyst": {
+            "type": "string",
+            "enum": [
+              "worker",
+              "openai"
+            ],
+            "title": "Analyst",
+            "default": "worker"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "target",
+          "goal"
+        ],
+        "title": "ResearchRequest"
+      },
       "Review": {
         "properties": {
           "note": {
@@ -2607,6 +4112,116 @@
           "note"
         ],
         "title": "Review"
+      },
+      "RoomMessage": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "maxLength": 1500,
+            "minLength": 4,
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "RoomMessage"
+      },
+      "RoomRequest": {
+        "properties": {
+          "persona_id": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Persona Id"
+          },
+          "topic": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 4,
+            "title": "Topic"
+          },
+          "council": {
+            "type": "boolean",
+            "title": "Council",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "persona_id",
+          "topic"
+        ],
+        "title": "RoomRequest"
+      },
+      "RoomSummaryOut": {
+        "properties": {
+          "agreements": {
+            "items": {
+              "$ref": "#/components/schemas/SummaryItem"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Agreements",
+            "default": []
+          },
+          "factual_disagreements": {
+            "items": {
+              "$ref": "#/components/schemas/SummaryItem"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Factual Disagreements",
+            "default": []
+          },
+          "value_disagreements": {
+            "items": {
+              "$ref": "#/components/schemas/SummaryItem"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Value Disagreements",
+            "default": []
+          },
+          "concessions": {
+            "items": {
+              "$ref": "#/components/schemas/SummaryItem"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Concessions",
+            "default": []
+          },
+          "open_questions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Open Questions",
+            "default": []
+          },
+          "generated_at": {
+            "type": "string",
+            "title": "Generated At"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note"
+          },
+          "turn_count": {
+            "type": "integer",
+            "title": "Turn Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "generated_at",
+          "note",
+          "turn_count"
+        ],
+        "title": "RoomSummaryOut"
       },
       "SamplingProtocol": {
         "properties": {
@@ -2730,6 +4345,119 @@
           "limitations"
         ],
         "title": "Scorecard"
+      },
+      "SummaryItem": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 4,
+            "title": "Text"
+          },
+          "quotes": {
+            "items": {
+              "$ref": "#/components/schemas/SummaryQuote"
+            },
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Quotes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text",
+          "quotes"
+        ],
+        "title": "SummaryItem"
+      },
+      "SummaryQuote": {
+        "properties": {
+          "turn": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Turn",
+            "description": "Index into room.turns"
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 4,
+            "title": "Quote"
+          }
+        },
+        "type": "object",
+        "required": [
+          "turn",
+          "quote"
+        ],
+        "title": "SummaryQuote"
+      },
+      "TextAuditRequest": {
+        "properties": {
+          "source_url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Source Url"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 40000,
+            "minLength": 15,
+            "title": "Text"
+          },
+          "goal": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Goal"
+          },
+          "domain": {
+            "type": "string",
+            "maxLength": 80,
+            "title": "Domain",
+            "default": "其他"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "edited_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Edited At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "source_url",
+          "title",
+          "text",
+          "goal"
+        ],
+        "title": "TextAuditRequest"
       },
       "ValidationError": {
         "properties": {

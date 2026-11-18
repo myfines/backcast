@@ -1,5 +1,7 @@
 # 类似产品与开源项目：给团队直接看的清单
 
+最新选型已增加 ZhiArchive（历史采集）和 Hindsight（忠实复盘），包括代码核对与本机实际运行结果，见 [HISTORY_AND_JUDGMENT.md](./HISTORY_AND_JUDGMENT.md)。
+
 研究日期：2026-11-16。核对范围为公开网站、仓库 README / 方法文档 / 文件树及可见许可证。本次未实际安装运行下列项目，宣传中的质量与正确率不视为已独立验证。
 
 ## 1. Epistack Labs / Reliability API：产品定位最接近

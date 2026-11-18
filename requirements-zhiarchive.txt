@@ -1,0 +1,2 @@
+# Optional Backcast MCP client; the upstream collector is a separate service.
+mcp==1.26.0

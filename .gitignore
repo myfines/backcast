@@ -9,6 +9,9 @@ test-results/
 playwright-report/
 .venv/
 .headroom-cache/
+.local/
+.playwright-cli/
+output/playwright/
 *.log
 *.tsbuildinfo
 next-env.d.ts

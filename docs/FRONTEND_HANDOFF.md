@@ -1,5 +1,7 @@
 # Frontend handoff · 给队友和 Claude
 
+> 当前主题已经切换为作者分身讨论室，请先看 [新版对接说明](ROOM_HANDOFF.md)。本页是旧专家合订本接口记录。
+
 ## 你负责什么
 
 前端在 `apps/web/`，可以重写页面和组件。后端位于 `services/api/`，已提供 v1 接口和真实种子案例。
@@ -26,6 +28,34 @@ npm --prefix apps/web run dev
 ```
 
 现有 Next.js rewrite 已把 `/api/*` 代理到 `http://127.0.0.1:8000`。换前端框架也可以，后端默认 CORS 允许本机 3000/5173。
+
+## 当前前端路由（feat/frontend-redesign）
+
+| 路由 | 页面 | 说明 |
+| --- | --- | --- |
+| `/` | 发现预测者 | `?domain=`、`?q=`、`?followed=1`（我的关注）、`?page=`；`/?expert=kuo` 旧分享链接重定向到合订本 |
+| `/experts/{id}` | 合订本 | 判断力面板、时间轴、历史判断；`?as_of=YYYY-MM-DD` 截止日视图，`?domain=`，`?claim={id}` 打开证据抽屉 |
+| `/claims/{id}` | 证据与判定（整页） | 原文、证据、判定引用、核验任务、纠错、审计历史 |
+| `/compare?ids=a,b&domain=` | 对比判断记录 | 2–4 人并排；不满足比较政策时不宣布胜者 |
+| `/import?author={id}` | 添加判断记录 | 新建档案或追加到已有档案 |
+| `/rooms` | 作者分身讨论室入口 | `POST /api/v1/rooms/demo`（载入示例分身并建房）；本设备最近的讨论 id 存在 localStorage |
+| `/rooms/{id}` | 讨论室 | `GET /rooms/{id}`、`POST /rooms/{id}/messages`、`GET /personas/{id}`、`GET /rooms/{id}/report`；发送是长请求，期间每 4 秒读取房间以显示已保存的部分；409/502 如实显示，不做假的完成动画 |
+| `/replay` | 真实讨论回放 | 无接口：读取 `apps/web/lib/replay/*.json`（`docs/examples/discussion-room.json`、`author-persona.json` 的副本，因 Docker 上下文只含 apps/web）。不调用模型，不需要凭证；示例更新后需重新复制 |
+| `/research` | 调查知乎答主 | 两种入口：`POST /api/v1/research-jobs`（按答主采集历史）与 `POST /api/v1/text-audits`（核查一段公开文字） |
+| `/research/{id}` | 调查进度与结果 | 轮询 `GET /api/v1/research-jobs/{id}`；终态为 `succeeded / needs_login / blocked / failed`，`awaiting_analysis` 低频轮询；`needs_login / blocked / failed` 可 `POST .../retry` |
+| `/methodology` | 评价方法 | 来自 `GET /api/v1/methodology` |
+| `/review` | 人工复核 | 令牌仅存于当前标签页 sessionStorage，以 `X-Review-Token` 发送 |
+
+前端类型来自 `packages/api-client/schema.d.ts` 的副本 `apps/web/lib/contract/schema.d.ts`（web 镜像的 Docker 构建上下文只有 `apps/web`）。后端更新契约后运行 `npm --prefix apps/web run sync:contract`。
+
+前端发现的契约缺口（未改后端）：
+- 讨论室页面的“质疑出处”只把追问写进输入框，用户确认后才发送；“把握度”只存在 localStorage，仅是用户自评；“原话使用情况”由回合里的 `quotes` 在前端统计。
+- 讨论室没有“列出房间”接口，也没有按任意作者创建画像的前端入口（`POST /personas` 会调用真实模型，需后端 `ZHIHU_ACCESS_SECRET`）；目前前端只接示例分身和已有房间。
+- `ResearchJob` 的 `coverage / documents / result` 在 OpenAPI 里是自由对象；前端按后端实际写入的字段在 `lib/api.ts` 里声明了类型，请在契约里补上明确的 schema。
+- 没有“列出我的调查任务”接口；前端只在 localStorage 记住本设备创建的任务 id，状态仍从接口读取。
+- `/research-jobs/{id}/input`、`/analysis` 需要后端工作器令牌，不属于前端接口，前端不调用也不保存该令牌。
+- 没有跨命题的“待处理纠错”列表接口；复核后台目前逐条请求 `GET /claims/{id}/reviews` 组装队列，数据量变大后需要 `GET /api/v1/reviews?status=pending`。
+- `GET /claims/{id}/reviews` 与 `/claims/{id}/audit` 的条目没有 OpenAPI schema（前端按 `{id,claim_id,note,created_at,status}` 与 `{id,action,record_id,created_at,data}` 解析）。
 
 ## 推荐页面与接口
 

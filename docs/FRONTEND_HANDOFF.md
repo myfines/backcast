@@ -40,6 +40,7 @@ npm --prefix apps/web run dev
 | `/import?author={id}` | 添加判断记录 | 新建档案或追加到已有档案 |
 | `/rooms` | 作者分身讨论室入口 | `POST /api/v1/rooms/demo`（载入示例分身并建房）；本设备最近的讨论 id 存在 localStorage |
 | `/rooms/{id}` | 讨论室 | `GET /rooms/{id}`、`POST /rooms/{id}/messages`、`GET /personas/{id}`、`GET /rooms/{id}/report`；发送是长请求，期间每 4 秒读取房间以显示已保存的部分；409/502 如实显示，不做假的完成动画 |
+| `/replay` | 真实讨论回放 | 无接口：读取 `apps/web/lib/replay/*.json`（`docs/examples/discussion-room.json`、`author-persona.json` 的副本，因 Docker 上下文只含 apps/web）。不调用模型，不需要凭证；示例更新后需重新复制 |
 | `/research` | 调查知乎答主 | 两种入口：`POST /api/v1/research-jobs`（按答主采集历史）与 `POST /api/v1/text-audits`（核查一段公开文字） |
 | `/research/{id}` | 调查进度与结果 | 轮询 `GET /api/v1/research-jobs/{id}`；终态为 `succeeded / needs_login / blocked / failed`，`awaiting_analysis` 低频轮询；`needs_login / blocked / failed` 可 `POST .../retry` |
 | `/methodology` | 评价方法 | 来自 `GET /api/v1/methodology` |
@@ -48,6 +49,7 @@ npm --prefix apps/web run dev
 前端类型来自 `packages/api-client/schema.d.ts` 的副本 `apps/web/lib/contract/schema.d.ts`（web 镜像的 Docker 构建上下文只有 `apps/web`）。后端更新契约后运行 `npm --prefix apps/web run sync:contract`。
 
 前端发现的契约缺口（未改后端）：
+- 讨论室页面的“质疑出处”只把追问写进输入框，用户确认后才发送；“把握度”只存在 localStorage，仅是用户自评；“原话使用情况”由回合里的 `quotes` 在前端统计。
 - 讨论室没有“列出房间”接口，也没有按任意作者创建画像的前端入口（`POST /personas` 会调用真实模型，需后端 `ZHIHU_ACCESS_SECRET`）；目前前端只接示例分身和已有房间。
 - `ResearchJob` 的 `coverage / documents / result` 在 OpenAPI 里是自由对象；前端按后端实际写入的字段在 `lib/api.ts` 里声明了类型，请在契约里补上明确的 schema。
 - 没有“列出我的调查任务”接口；前端只在 localStorage 记住本设备创建的任务 id，状态仍从接口读取。

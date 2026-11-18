@@ -2,11 +2,14 @@
 import Link from 'next/link';
 import { FileText, Loader2, Send } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { api, ApiError, type Room, type RoomTurn } from '@/lib/api';
+import { api, ApiError, type Room } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
 import { dateTime } from '@/lib/format';
 import { isApiNotFound } from '@/components/claim';
-import { PersonaCard, QuoteList, SimulationNotice } from '@/components/persona';
+import { PersonaCard, SimulationNotice } from '@/components/persona';
+import { ConfidenceTracker } from '@/components/confidence';
+import { QuoteUsage } from '@/components/quote-usage';
+import { Turn, challengeText } from '@/components/room-turn';
 import { Empty, ErrorState, Notice, Skeleton } from '@/components/ui';
 
 const MAX_USER_TURNS = 12;
@@ -18,6 +21,7 @@ export function RoomView({ id }: { id: string }) {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string>();
   const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -57,6 +61,13 @@ export function RoomView({ id }: { id: string }) {
   const userTurns = room?.turns.filter((t) => t.kind === 'user').length ?? 0;
   const text = message.trim();
   const canSend = !busy && text.length >= 4 && text.length <= 1500 && userTurns < MAX_USER_TURNS;
+
+  // Fills the follow-up into the input box; the user reads it and decides whether to send (each send costs model calls).
+  function challenge(turn: Parameters<typeof challengeText>[0]) {
+    setMessage(challengeText(turn));
+    setSendError(undefined);
+    inputRef.current?.focus();
+  }
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
@@ -118,7 +129,7 @@ export function RoomView({ id }: { id: string }) {
             </div>
           )}
           {room.turns.map((t, i) => (
-            <Turn key={i} turn={t} persona={persona.data} />
+            <Turn key={i} turn={t} persona={persona.data} onChallenge={challenge} challengeDisabled={busy || userTurns >= MAX_USER_TURNS} />
           ))}
           {busy && (
             <div className="card pad" role="status" aria-live="polite" style={{ display: 'flex', gap: 10, alignItems: 'center', fontSize: 14 }}>
@@ -139,6 +150,7 @@ export function RoomView({ id }: { id: string }) {
               <textarea
                 className="textarea"
                 aria-label="你的发言"
+                ref={inputRef}
                 style={{ minHeight: 96 }}
                 placeholder="说出你的立场，或追问分身的某个说法。例如：我想把远程设为默认，你最担心什么？"
                 value={message}
@@ -168,26 +180,12 @@ export function RoomView({ id }: { id: string }) {
         </section>
 
         <aside aria-label="作者画像" style={{ display: 'grid', gap: 16 }}>
+          <ConfidenceTracker roomId={room.id} userTurns={userTurns} avatarReplies={room.turns.filter((t) => t.kind === 'author_avatar').length} />
+          <QuoteUsage persona={persona.data} turns={room.turns} />
           {persona.error ? <ErrorState error={persona.error} retry={persona.reload} /> : persona.data ? <PersonaCard persona={persona.data} /> : <Skeleton h={240} />}
           <p className="muted" style={{ fontSize: 12 }}>创建于 {dateTime(room.created_at)}</p>
         </aside>
       </div>
     </>
-  );
-}
-
-function Turn({ turn, persona }: { turn: RoomTurn; persona?: Parameters<typeof QuoteList>[0]['persona'] }) {
-  const cls = turn.kind === 'user' ? 'user' : turn.kind === 'author_avatar' ? 'avatar-turn' : 'council';
-  return (
-    <article className={`turn ${cls}`} aria-label={turn.name}>
-      <div className="turn-head">
-        <b>{turn.name}</b>
-        {turn.kind === 'fictional_council' && <span className="tag outline">虚构 AI 角色，不代表任何真人</span>}
-        {turn.kind === 'author_avatar' && <span className="tag">AI 模拟</span>}
-      </div>
-      {turn.reply_to_quote && <p className="muted" style={{ fontSize: 12, marginBottom: 6 }}>回应你说的：“{turn.reply_to_quote}”</p>}
-      <p style={{ fontSize: 14, whiteSpace: 'pre-wrap' }}>{turn.text}</p>
-      {turn.quotes && turn.quotes.length > 0 && <QuoteList quotes={turn.quotes} persona={persona} />}
-    </article>
   );
 }

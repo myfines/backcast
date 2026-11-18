@@ -73,6 +73,13 @@ export function RoomsStart() {
 
         <aside aria-label="使用说明与最近讨论" style={{ display: 'grid', gap: 16 }}>
           <div className="card pad">
+            <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>先看一场真实录制</h2>
+            <p style={{ fontSize: 14 }}>不需要凭证，也不会调用模型。回放包含 3 次用户发言、分身与辩论团的回应，以及被追问后纠正的过程。</p>
+            <Link className="btn" style={{ marginTop: 12 }} href="/replay">
+              观看回放
+            </Link>
+          </div>
+          <div className="card pad">
             <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>请先了解</h2>
             <ul className="list-plain">
               <li>· 生成每轮回应需要几十秒，请耐心等待，不要重复提交。</li>

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { test, expect, type Page } from '@playwright/test';
 
 // Disposable token for the throwaway E2E API (set in playwright.config.ts); not a real secret.
@@ -261,5 +263,54 @@ test('rooms: demo room shows a labelled AI simulation with source quotes and nev
   await expect(page.locator('.turn.user')).toHaveCount(1);
   await expect(page.locator('.turn.avatar-turn')).toHaveCount(0);
   await expect(page.locator('.turn.council')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test('replay: a recorded real discussion works without the backend calling any model', async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto('/replay');
+  await expect(page.getByRole('heading', { level: 1, name: /远程办公/ })).toBeVisible();
+  await expect(page.getByText('回放不会调用模型')).toBeVisible();
+  await expect(page.getByText('这是 AI 依据公开文字生成的模拟，不是作者本人')).toBeVisible();
+  // 3 user turns + 3 avatar replies + 6 fictional council turns.
+  await expect(page.locator('.turn')).toHaveCount(12);
+  await expect(page.locator('.turn.council').first()).toContainText('虚构 AI 角色');
+  await expect(page.getByTestId('usage-summary')).toContainText('本场引用了');
+  // It is a recording: there is no input box and no challenge button.
+  await expect(page.getByRole('form', { name: '发言' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '质疑出处' })).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test('rooms: challenge button prefills a follow-up, confidence is self-rated and local', async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto('/rooms');
+  await page.getByRole('button', { name: '进入讨论室' }).click();
+  await expect(page).toHaveURL(/\/rooms\/[0-9a-f]{32}$/);
+  const roomId = page.url().split('/').pop()!;
+
+  // Fresh room: "before" can be recorded, "after" must wait for an avatar reply.
+  await page.getByRole('button', { name: '记录讨论前的把握度' }).click();
+  await expect(page.getByTestId('conf-before-value')).toHaveText('50');
+  await expect(page.locator('#conf-after')).toBeDisabled();
+
+  // Show the recorded conversation for this room (the test has no model credentials).
+  const recorded = JSON.parse(readFileSync(resolve(__dirname, '../lib/replay/discussion-room.json'), 'utf-8'));
+  await page.route(new RegExp(`/api/v1/rooms/${roomId}$`), (route) => route.fulfill({ json: { ...recorded, id: roomId } }));
+  await page.reload();
+  await expect(page.locator('.turn.avatar-turn')).toHaveCount(3);
+
+  const challenge = page.getByRole('button', { name: '质疑出处' }).first();
+  await expect(challenge).toBeEnabled();
+  await challenge.click();
+  const box = page.getByRole('textbox', { name: '你的发言' });
+  await expect(box).toHaveValue(/请指出这句话在你的原文里的依据/);
+  // Prefilled only: nothing is sent until the user presses send.
+  await expect(page.locator('.turn.user')).toHaveCount(3);
+
+  await page.locator('#conf-after').fill('30');
+  await page.getByRole('button', { name: '记录现在的把握度' }).click();
+  await expect(page.getByTestId('conf-delta')).toContainText('下降了 20 点');
+  await expect(page.getByText('也不说明你的立场对错')).toBeVisible();
   expect(errors).toEqual([]);
 });
